@@ -131,3 +131,72 @@ void checkMarkov(const liste_d_adjacence *G) {
         printf("\nLe graphe n'est pas un graphe de Markov.\n");
     }
 }
+
+// -Étape 3-
+
+// Transformer les indicatif du sommets qui sont en chiffre en lettres
+const char *getID(int i)
+{
+    static char buffer[10];
+    char temp[10];
+    int index = 0;
+
+    i--; // Ajuste pour un index 0
+    while (i >= 0)
+    {
+        temp[index++] = 'A' + (i % 26);
+        i = (i / 26) - 1;
+    }
+
+    // Inversion pour obtenir l’ordre correct
+    for (int j = 0; j < index; j++)
+    {
+        buffer[j] = temp[index - j - 1];
+    }
+    buffer[index] = '\0';
+
+    return buffer;
+}
+
+// Transformer la liste d'adjacence pour pour la visualiser sur Mermaidƒ
+
+int visualMermaid(const liste_d_adjacence *g, const char *filepath)
+{
+    if (!g || !g->list || g->n <= 0 || !filepath) {
+        fprintf(stderr, "visualMermaid: graphe ou chemin invalide\n");
+        return -1;
+    }
+
+    FILE *f = fopen(filepath, "wt");
+    fprintf(f,
+        "---\n"
+        "config:\n"
+        "   layout: elk\n"
+        "   theme: neo\n"
+        "   look: neo\n"
+        "---\n\n"
+        "flowchart LR\n"
+    );
+
+    for (int i = 1; i <= g->n; ++i) {
+        char id[16];
+        strcpy(id, getID(i));              
+        fprintf(f, "%s((%d))\n", id, i);
+    }
+    fprintf(f, "\n");
+
+    for (int i = 0; i < g->n; ++i) {
+        char src[16];
+        strcpy(src, getID(i + 1));        
+
+        for (cell *cur = g->list[i].head; cur; cur = cur->next) {
+            char dst[16];
+            strcpy(dst, getID(cur->arriv));
+
+            fprintf(f, "%s -->|%.2f| %s\n", src, cur->proba, dst);
+        }
+    }
+
+    fclose(f);
+    return 0;
+}
