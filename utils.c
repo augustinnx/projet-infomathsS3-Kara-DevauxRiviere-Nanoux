@@ -3,80 +3,131 @@
 #include <string.h>
 #include "utils.h"
 
-/* getID en version exportée (non static) */
-const char *getID(int i) {
-    // 1->A, 26->Z, 27->AA...
-    static char buffer[16];
-    char temp[16];
-    int index = 0;
+// -Étape 1-
 
-    if (i <= 0) {
-        snprintf(buffer, sizeof(buffer), "?");
-        return buffer;
-    }
-
-    i--; // 0-based
-    while (i >= 0) {
-        temp[index++] = 'A' + (i % 26);
-        i = (i / 26) - 1;
-    }
-    // reverse
-    for (int j = 0; j < index; ++j) buffer[j] = temp[index - j - 1];
-    buffer[index] = '\0';
-    return buffer;
+// Création d'une cellule
+cell *createCell(int arriv, float proba) {
+    cell *newCell = (cell *)malloc(sizeof(cell));
+    newCell->arriv = arriv;
+    newCell->proba = proba;
+    newCell->next  = NULL;
+    return newCell;
 }
 
-int readWeightedTriplesToMatrix(const char *path, int *out_n, double ***out_mat) {
-    if (!path || !out_n || !out_mat) return -1;
+// Création d'une liste vide
+list createEmptyList(void) {
+    list l;
+    l.head = NULL;
+    return l;
+}
 
-    FILE *fp = fopen(path, "r");
-    if (!fp) return -2;
+// Ajout d'une cellule 
+void addCell(list *l, int arriv, float proba) {
+    cell *newCell = createCell(arriv, proba);
+    newCell->next = l->head;
+    l->head = newCell;
+}
 
-    int n;
-    if (fscanf(fp, "%d", &n) != 1 || n <= 0) {
-        fclose(fp);
-        return -3;
+// Affichage d'une liste
+void printList(const list *l) {
+    const cell *c = (l ? l->head : NULL);
+    printf("[head @]");
+    while (c) {
+        printf(" -> (%d, %.2f)", c->arriv, c->proba);
+        c = c->next;
     }
+    printf("\n");
+}
 
-    // Alloue matrice n x n et initialise à 0.0
-    double **mat = (double **)malloc(sizeof(double *) * n);
-    if (!mat) { fclose(fp); return -4; }
-    for (int i = 0; i < n; ++i) {
-        mat[i] = (double *)calloc(n, sizeof(double));
-        if (!mat[i]) {
-            for (int k = 0; k < i; ++k) free(mat[k]);
-            free(mat);
-            fclose(fp);
-            return -4;
+// Création d'une liste d'adjacence vide
+liste_d_adjacence createEmptyGraph(int n) {
+    liste_d_adjacence G;
+    G.n = (n > 0 ? n : 0);
+    G.list = NULL;
+    if (G.n > 0) {
+        G.list = (list *)malloc(sizeof(list) * G.n);
+        for (int i = 0; i < G.n; ++i) {
+            G.list[i] = createEmptyList();
+        }
+    }
+    return G;
+}
+
+// Affichage de la liste d'adjacence
+void printListe_d_adjacence(const liste_d_adjacence *G) {
+    if (!G || !G->list || G->n <= 0) {
+        printf("(graphe vide)\n");
+        return;
+    }
+    for (int i = 0; i < G->n; ++i) {
+        printf("Liste pour le sommet %d : ", i + 1);
+        printList(&G->list[i]);
+    }
+}
+
+// Lire la liste d'adjacence 
+liste_d_adjacence readGraph(const char *filename) {
+    FILE *file = fopen(filename, "rt"); // read-only, text
+    int nbvert, depart, arrivee;
+    float proba;
+    // declarer la variable pour la liste d’adjacence
+    liste_d_adjacence G;
+
+    if (file==NULL)
+    {
+        perror("Could not open file for reading");
+        exit(EXIT_FAILURE);
+    }
+    // first line contains number of vertices
+    if (fscanf(file, "%d", &nbvert) != 1)
+    {
+        perror("Could not read number of vertices");
+        fclose(file);
+        exit(EXIT_FAILURE);
+    }
+    // Initialiser une liste d’adjacence vide à partir du nombre de sommets
+    G = createEmptyGraph(nbvert);
+
+    while (fscanf(file, "%d %d %f", &depart, &arrivee, &proba) == 3)
+    {
+        // on obtient, pour chaque ligne du fichier les valeurs
+        // depart, arrivee, et proba
+        // Ajouter l’arête qui va de ‘depart’ à ‘arrivée’ avec la probabilité ‘proba’ dans la liste d’adjacence
+        if (depart >= 1 && depart <= G.n) {
+            addCell(&G.list[depart - 1], arrivee, proba);
         }
     }
 
-    // Lit des triplets jusqu'à la fin du fichier
-    int u, v;
-    double w;
-    while (fscanf(fp, "%d %d %lf", &u, &v, &w) == 3) {
-        if (u >= 1 && u <= n && v >= 1 && v <= n) {
-            mat[u - 1][v - 1] = w;
+    fclose(file);
+    // return la liste d’adjacence remplie;
+    return G;
+}
+
+// -Étape 2-
+
+// Vérification du graphe de Markov 
+void checkMarkov(const liste_d_adjacence *G) {
+    if (!G || !G->list || G->n <= 0) {
+        printf("Erreur : graphe vide ou non initialisé.\n");
+        return;
+    }
+
+    int estMarkov = 1;
+
+    for (int i = 0; i < G->n; ++i) {
+        float somme = 0.0f;
+        for (cell *cur = G->list[i].head; cur; cur = cur->next) {
+            somme += cur->proba;
+        }
+        if (somme < 0.99f || somme > 1.01f) {
+            printf("Sommet %d : somme = %.2f \n", i + 1, somme);
+            estMarkov = 0;
         }
     }
 
-    fclose(fp);
-    *out_n = n;
-    *out_mat = mat;
-    return 0;
-}
-
-void freeMatrix(int n, double **mat) {
-    if (!mat) return;
-    for (int i = 0; i < n; ++i) free(mat[i]);
-    free(mat);
-}
-
-void printLinksLabeled(void printLinksLabeled(FILE *f, int n, const t_link *links, int count);) {
-    if (!f) f = stdout;
-    for (int i = 0; i < count; ++i) {
-        const char *A = getID(links[i].from);
-        const char *B = getID(links[i].to);
-        fprintf(f, "%s -> %s\n", A, B);
+    if (estMarkov) {
+        printf("\nLe graphe est un graphe de Markov.\n");
+    } else {
+        printf("\nLe graphe n'est pas un graphe de Markov.\n");
     }
 }
