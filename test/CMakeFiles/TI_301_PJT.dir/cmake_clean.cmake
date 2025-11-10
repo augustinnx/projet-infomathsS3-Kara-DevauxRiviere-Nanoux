@@ -1,6 +1,4 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/TI_301_PJT.dir/hasse.c.o"
-  "CMakeFiles/TI_301_PJT.dir/hasse.c.o.d"
   "CMakeFiles/TI_301_PJT.dir/main.c.o"
   "CMakeFiles/TI_301_PJT.dir/main.c.o.d"
   "CMakeFiles/TI_301_PJT.dir/utils.c.o"

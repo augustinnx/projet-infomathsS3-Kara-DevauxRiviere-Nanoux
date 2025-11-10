@@ -48,19 +48,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /opt/homebrew/bin/cmake
+CMAKE_COMMAND = /usr/local/bin/cmake
 
 # The command to remove a file.
-RM = /opt/homebrew/bin/cmake -E rm -f
+RM = /usr/local/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/walidk/Desktop/ProjetC-Markov-Walid-Aurelien-Augustin
+CMAKE_SOURCE_DIR = /Users/Augustin/Documents/PROJET-mathsinfoS3/projet-infomathsS3-Kara-DevauxRiviere-Nanoux
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/walidk/Desktop/ProjetC-Markov-Walid-Aurelien-Augustin/test
+CMAKE_BINARY_DIR = /Users/Augustin/Documents/PROJET-mathsinfoS3/projet-infomathsS3-Kara-DevauxRiviere-Nanoux/test
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -68,7 +68,7 @@ CMAKE_BINARY_DIR = /Users/walidk/Desktop/ProjetC-Markov-Walid-Aurelien-Augustin/
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running CMake cache editor..."
-	/opt/homebrew/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/local/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -78,7 +78,7 @@ edit_cache/fast: edit_cache
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running CMake to regenerate build system..."
-	/opt/homebrew/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/local/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/walidk/Desktop/ProjetC-Markov-Walid-Aurelien-Augustin/test/CMakeFiles /Users/walidk/Desktop/ProjetC-Markov-Walid-Aurelien-Augustin/test//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/Augustin/Documents/PROJET-mathsinfoS3/projet-infomathsS3-Kara-DevauxRiviere-Nanoux/test/CMakeFiles /Users/Augustin/Documents/PROJET-mathsinfoS3/projet-infomathsS3-Kara-DevauxRiviere-Nanoux/test//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/walidk/Desktop/ProjetC-Markov-Walid-Aurelien-Augustin/test/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/Augustin/Documents/PROJET-mathsinfoS3/projet-infomathsS3-Kara-DevauxRiviere-Nanoux/test/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -128,30 +128,6 @@ TI_301_PJT: cmake_check_build_system
 TI_301_PJT/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/TI_301_PJT.dir/build.make CMakeFiles/TI_301_PJT.dir/build
 .PHONY : TI_301_PJT/fast
-
-hasse.o: hasse.c.o
-.PHONY : hasse.o
-
-# target to build an object file
-hasse.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/TI_301_PJT.dir/build.make CMakeFiles/TI_301_PJT.dir/hasse.c.o
-.PHONY : hasse.c.o
-
-hasse.i: hasse.c.i
-.PHONY : hasse.i
-
-# target to preprocess a source file
-hasse.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/TI_301_PJT.dir/build.make CMakeFiles/TI_301_PJT.dir/hasse.c.i
-.PHONY : hasse.c.i
-
-hasse.s: hasse.c.s
-.PHONY : hasse.s
-
-# target to generate assembly for a file
-hasse.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/TI_301_PJT.dir/build.make CMakeFiles/TI_301_PJT.dir/hasse.c.s
-.PHONY : hasse.c.s
 
 main.o: main.c.o
 .PHONY : main.o
@@ -210,9 +186,6 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... TI_301_PJT"
-	@echo "... hasse.o"
-	@echo "... hasse.i"
-	@echo "... hasse.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

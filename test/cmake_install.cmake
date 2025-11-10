@@ -1,4 +1,4 @@
-# Install script for directory: /Users/walidk/Desktop/ProjetC-Markov-Walid-Aurelien-Augustin
+# Install script for directory: /Users/Augustin/Documents/PROJET-mathsinfoS3/projet-infomathsS3-Kara-DevauxRiviere-Nanoux
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,7 +40,7 @@ endif()
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "/Users/walidk/Desktop/ProjetC-Markov-Walid-Aurelien-Augustin/test/install_local_manifest.txt"
+  file(WRITE "/Users/Augustin/Documents/PROJET-mathsinfoS3/projet-infomathsS3-Kara-DevauxRiviere-Nanoux/test/install_local_manifest.txt"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()
 if(CMAKE_INSTALL_COMPONENT)
@@ -56,6 +56,6 @@ else()
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "/Users/walidk/Desktop/ProjetC-Markov-Walid-Aurelien-Augustin/test/${CMAKE_INSTALL_MANIFEST}"
+  file(WRITE "/Users/Augustin/Documents/PROJET-mathsinfoS3/projet-infomathsS3-Kara-DevauxRiviere-Nanoux/test/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()
