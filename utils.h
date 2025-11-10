@@ -3,36 +3,39 @@
 
 #include <stdio.h>
 
-/* ========== Lectures / outils généraux ========== */
+// Structure pour la cellule
+typedef struct cell {
+    int arriv;            
+    float proba;          
+    struct cell *next;    
+} cell;
 
-/**
- * @brief Convertit 1 -> "A", 26 -> "Z", 27 -> "AA", etc.
- */
+// Structure pour la liste 
+typedef struct {
+    cell *head;           
+} list;
+
+// Structure pour la liste d'adjacence
+typedef struct {
+    int n;               
+    list *list;           
+} liste_d_adjacence;
+
+
+// Étape 1
+cell *createCell(int arriv, float proba);
+list createEmptyList(void);
+void addCell(list *l, int arriv, float proba);
+void printList(const list *l);
+liste_d_adjacence createEmptyGraph(int n);
+void printListe_d_adjacence(const liste_d_adjacence *g);
+liste_d_adjacence readGraph(const char *filename);
+
+// Étape 2
+void checkMarkov(const liste_d_adjacence *G);
+
+// Étape 3
 const char *getID(int i);
-
-/**
- * @brief Charge une matrice pondérée n x n depuis un fichier.
- *        Format attendu:
- *          n
- *          u v w
- *          u v w
- *          ...
- *        avec 1 <= u,v <= n. Les lignes suivantes peuvent être en nombre variable.
- * @param path chemin du fichier
- * @param out_n (sortie) nombre de sommets
- * @param out_mat (sortie) matrice allouée dynamiquement [n][n]
- * @return 0 si OK, non-0 sinon
- */
-int readWeightedTriplesToMatrix(const char *path, int *out_n, double ***out_mat);
-
-/**
- * @brief Libère une matrice n x n de double.
- */
-void freeMatrix(int n, double **mat);
-
-/**
- * @brief Affiche une liste de liens (u->v) avec des IDs lettres (A,B,...).
- */
-void printLinksLabeled(void printLinksLabeled(FILE *f, int n, const t_link *links, int count););
+int visualMermaid(const liste_d_adjacence *g, const char *filepath);
 
 #endif
