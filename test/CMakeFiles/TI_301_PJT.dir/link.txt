@@ -1,1 +1,0 @@
-/usr/bin/cc  -arch x86_64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/TI_301_PJT.dir/main.c.o CMakeFiles/TI_301_PJT.dir/utils.c.o -o TI_301_PJT
