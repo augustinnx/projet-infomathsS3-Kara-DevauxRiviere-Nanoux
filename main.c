@@ -5,6 +5,7 @@
 
 int main(void)
 {
+   
     // Partie 1
     printf("=== PARTIE 1 ===\n");
     liste_d_adjacence G = readGraph("../data/exemple_valid_step3.txt");
@@ -13,25 +14,31 @@ int main(void)
     visualMermaid(&G, "graph.mmd");
     printf("Fichier Mermaid (graphe): graph.mmd\n");
     
+   
     // Partie 2
     printf("\n=== PARTIE 2 ===\n");
     
+   
     // Étape 1: Tarjan (composantes fortement connexes)
     t_partition *partition = tarjan(&G);
     printPartition(partition);
     
+   
     // Étape 2: Diagramme de Hasse
     t_link_array *links = buildClassLinks(&G, partition);
+    
     
     // Option: retirer les redondances (décommenter si souhaité)
     // removeTransitiveLinks(links);
     generateHasseDiagram(partition, links, "hasse.mmd");
+    
+    
     // Étape 3: Caractéristiques
     analyzeGraphProperties(partition, links);
+    
     // Nettoyage
     freeLinkArray(links);
     free(links);
     freePartition(partition);
     return 0;
-
 }
