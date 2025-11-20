@@ -2,6 +2,8 @@
 #define __HASSE_H__
 
 #include <stddef.h>
+#include "tarjan.h"   // pour t_partition :contentReference[oaicite:5]{index=5}
+#include "utils.h"    // pour liste_d_adjacence :contentReference[oaicite:6]{index=6}
 
 /* ========== Types de liens pour le diagramme de Hasse ========== */
 
@@ -16,7 +18,7 @@ typedef struct {
     int capacity;
 } t_link_array;
 
-/* ========== API Hasse ========== */
+/* ========== API Hasse générique (déjà existant) ========== */
 
 /**
  * @brief Supprime les arêtes transitives (réduction transitive) dans p_link_array.
@@ -38,5 +40,9 @@ int buildLinksFromWeightedMatrix(int n, double **mat, double threshold, t_link_a
  * @brief Libère la mémoire d'un t_link_array.
  */
 void freeLinkArray(t_link_array *arr);
+int* createVertexToClassMap(const t_partition *p, int n);
+t_link_array* buildClassLinks(const liste_d_adjacence *g, const t_partition *p);
+void generateHasseDiagram(const t_partition *p,const t_link_array *links,const char *filepath);
+void analyzeGraphProperties(const t_partition *p, const t_link_array *links);
 
 #endif
