@@ -23,5 +23,15 @@ int main(void)
     // Étape 2: Diagramme de Hasse
     t_link_array *links = buildClassLinks(&G, partition);
     
+    // Option: retirer les redondances (décommenter si souhaité)
+    // removeTransitiveLinks(links);
+    generateHasseDiagram(partition, links, "hasse.mmd");
+    // Étape 3: Caractéristiques
+    analyzeGraphProperties(partition, links);
+    // Nettoyage
+    freeLinkArray(links);
+    free(links);
+    freePartition(partition);
+    return 0;
 
 }
