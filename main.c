@@ -1,17 +1,27 @@
 #include <stdio.h>
 #include "utils.h"
+#include "tarjan.h"
+#include "hasse_utils.h"
 
 int main(void)
 {
-    // Étape 1 : lire le graphe et afficher la liste d'adjacence
-    liste_d_adjacence G = readGraph("../data/exemple1.txt");
+    // Partie 1
+    printf("=== PARTIE 1 ===\n");
+    liste_d_adjacence G = readGraph("../data/exemple_valid_step3.txt");
     printListe_d_adjacence(&G);
-
-    // Étape 2: vérifier la propriété de Markov
     checkMarkov(&G);
-
-    // Étape 3 : générer le fichier Mermaid
     visualMermaid(&G, "graph.mmd");
+    printf("Fichier Mermaid (graphe): graph.mmd\n");
+    
+    // Partie 2
+    printf("\n=== PARTIE 2 ===\n");
+    
+    // Étape 1: Tarjan (composantes fortement connexes)
+    t_partition *partition = tarjan(&G);
+    printPartition(partition);
+    
+    // Étape 2: Diagramme de Hasse
+    t_link_array *links = buildClassLinks(&G, partition);
+    
 
-    return 0;
 }
