@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "hasse.h"
 
-/* ========== Utilitaires internes pour t_link_array (déjà existants) ========== */
+//Utilitaires internes pour t_link_array
 
 static void linkArrayInit(t_link_array *arr, int cap) {
     arr->links = (t_link *)malloc(sizeof(t_link) * (cap > 0 ? cap : 8));
@@ -17,7 +17,7 @@ static void linkArrayPush(t_link_array *arr, t_link e) {
     arr->links[arr->log_size++] = e;
 }
 
-/* ========== Fonctions génériques Hasse (déjà existantes) ========== */
+//Fonctions génériques Hasse 
 
 void freeLinkArray(t_link_array *arr) {
     if (!arr) return;
@@ -78,7 +78,7 @@ void removeTransitiveLinks(t_link_array *p_link_array) {
     }
 }
 
-/* ========== Fonctions spécifiques partie 2 (ancien hasse_utils.c) ========== */
+//Fonctions spécifiques partie 2 (ancien hasse_utils.c) 
 
 /* Crée un tableau indiquant la classe de chaque sommet (taille n, indices 0..n-1)
  * map[i] = indice de la classe (0..nb_classes-1) qui contient le sommet (i+1)
