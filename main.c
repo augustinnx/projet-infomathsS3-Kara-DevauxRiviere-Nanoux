@@ -273,5 +273,5 @@ int main(void) {
     return 0;
 }
 
-// Parcours DFS pour l'algorithme  
+// Parcours DFS pour l'  
 
