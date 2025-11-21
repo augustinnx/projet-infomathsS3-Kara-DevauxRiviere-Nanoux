@@ -13,7 +13,7 @@ typedef struct {
     double **data;  // data[i][j]
 } t_matrix;
 
-/* ====== Gestion de base ====== */
+/*  Gestion de base  */
 
 // Crée une matrice n x n remplie de 0
 t_matrix *createZeroMatrix(int n);
@@ -24,7 +24,7 @@ void freeMatrix(t_matrix *m);
 // Affiche une matrice (pour debug / validation)
 void printMatrix(const t_matrix *m);
 
-/* ====== Fonctions partie 3.1 ====== */
+/*  Fonctions partie 3.1  */
 
 // Construit la matrice de transition M à partir de la liste d'adjacence G
 // M[i][j] = proba(i -> j)
