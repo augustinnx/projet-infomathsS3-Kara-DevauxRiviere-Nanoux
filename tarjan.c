@@ -163,12 +163,4 @@ void printPartition(const t_partition *p) {
     }
 }
 
-// Libération mémoire
-void freePartition(t_partition *p) {
-    if (!p) return;
-    for (int i = 0; i < p->nb_classes; i++) {
-        free(p->classes[i].vertices);
-    }
-    free(p->classes);
-    free(p);
-}
+
