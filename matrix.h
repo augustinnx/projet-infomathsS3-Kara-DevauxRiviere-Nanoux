@@ -5,9 +5,9 @@
 #include "utils.h"
 #include "tarjan.h"
 
-/**
- * Matrice carrée n x n de doubles
- */
+
+ // Matrice carrée n x n de doubles
+ 
 typedef struct {
     int n;          // dimension (n x n)
     double **data;  // data[i][j]
