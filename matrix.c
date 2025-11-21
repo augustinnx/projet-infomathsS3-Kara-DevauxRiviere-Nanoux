@@ -72,6 +72,8 @@ void printMatrix(const t_matrix *m) {
 
 //Partie 3.1
 
+
+
 // graphToTransitionMatrix
 // Convertit une liste d’adjacence en matrice de transition.
 // Pour chaque arête i -> j, place la probabilité correspondante dans M[i][j].
@@ -116,10 +118,7 @@ void copyMatrix(const t_matrix *src, t_matrix *dst) {
     }
 }
 
-// multiplyMatrix
-// Réalise le produit matriciel C = A * B pour des matrices carrées.
-// Implémente l’algorithme classique en O(n^3).
-// C = A * B (nouvelle matrice)
+
 t_matrix *multiplyMatrix(const t_matrix *A, const t_matrix *B) {
     if (!A || !B) return NULL;
     if (A->n != B->n) return NULL;
