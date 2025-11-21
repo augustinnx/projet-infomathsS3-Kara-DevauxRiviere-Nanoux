@@ -80,9 +80,9 @@ void removeTransitiveLinks(t_link_array *p_link_array) {
 
 //Fonctions spécifiques partie 2 (ancien hasse_utils.c) 
 
-/* Crée un tableau indiquant la classe de chaque sommet (taille n, indices 0..n-1)
- * map[i] = indice de la classe (0..nb_classes-1) qui contient le sommet (i+1)
- */
+// Crée un tableau indiquant la classe de chaque sommet (taille n, indices 0..n-1)
+ // map[i] = indice de la classe (0..nb_classes-1) qui contient le sommet (i+1)
+ 
 int* createVertexToClassMap(const t_partition *p, int n) {
     int *map = (int*)malloc(sizeof(int) * n);
     if (!map) return NULL;
