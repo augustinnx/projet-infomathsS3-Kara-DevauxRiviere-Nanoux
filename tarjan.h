@@ -1,41 +1,41 @@
-#ifndef TARJAN_H
-#define TARJAN_H
+#ifndef __TARJAN_H__
+#define __TARJAN_H__
 
 #include "utils.h"
 
-//tructure pour un sommet dans l'algorithme de Tarjan
+/* Structure pour un sommet dans l'algorithme de Tarjan */
 typedef struct {
-    int id;
-    int num;
-    int num_acc;
-    int ind_bool;
+    int id;        // Numéro du sommet (1..n)
+    int num;       // Numéro de visite
+    int num_acc;   // Numéro accessible (ancien low)
+    int ind_bool;  // Indicateur : dans la pile ? (0 ou 1)
 } t_tarjan_vertex;
 
-// Structure pour une classe / composante fortement connexe
+/* Structure pour une classe / composante fortement connexe */
 typedef struct {
-    char name[10];
-    t_tarjan_vertexsommets;
-    int taille;
-    int capacite;
+    char name[10];        // "C1", "C2", ...
+    t_tarjan_vertex *sommets; // Tableau dynamique de sommets
+    int taille;               // Nombre de sommets
+    int capacite;             // Capacité allouée
 } t_classe;
 
-// Structure pour stocker toutes les classes /
+/* Structure pour stocker toutes les classes (partition du graphe) */
 typedef struct {
-    t_classeclasses;
-    int nb_classes;
-    int capacite;
+    t_classe *classes; // Tableau dynamique de classes
+    int nb_classes;    // Nombre total de classes
+    int capacite;      // Capacité allouée
 } t_stock_classe;
 
-// Initialise le tableau de sommets pour l'algorithme de Tarjan 
-t_tarjan_vertex initTarjanVertex(const liste_d_adjacence g);
+/* Initialise le tableau de sommets pour l'algorithme de Tarjan */
+t_tarjan_vertex* initTarjanVertices(const liste_d_adjacence *g);
 
-// Applique l'algorithme de Tarjan au graphe 
-t_stock_classe tarjan(const liste_d_adjacence g);
+/* Applique l'algorithme de Tarjan au graphe et renvoie les classes */
+t_stock_classe* tarjan(const liste_d_adjacence *g);
 
-// Affiche la partition en classes
-void printPartition(const t_stock_classep);
+/* Affiche les classes obtenues par Tarjan */
+void printPartition(const t_stock_classe *p);
 
-// Libère toute la mémoire associée aux classes /
-void freePartition(t_stock_classep);
+/* Libère toute la mémoire associée aux classes */
+void freePartition(t_stock_classe *p);
 
 #endif

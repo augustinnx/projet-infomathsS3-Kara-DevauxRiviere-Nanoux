@@ -7,7 +7,7 @@
 
 int main(void) {
     liste_d_adjacence g;
-    t_partition *p = NULL;
+    t_stock_classe *p = NULL;
     t_link_array *links = NULL;
 
     int graphLoaded = 0;
@@ -18,9 +18,9 @@ int main(void) {
     int choice = -1;
 
     while (choice != 0) {
-        printf("\n//================================\\\\\n")
+        printf("\n//================================\\\\\n");
         printf("||              MENU              ||\n");
-        printf("\n//================================\\\\\n")
+        printf("//================================\\\\\n");
         printf("1. Charger un graphe depuis un fichier (dossier data)\n");
         printf("2. Afficher la liste d'adjacence\n");
         printf("3. Vérifier la propriété de Markov\n");
@@ -42,7 +42,7 @@ int main(void) {
 
         switch (choice) {
 
-        /*  1. CHARGER GRAPHE  */
+        /* 1. CHARGER GRAPHE */
         case 1: {
             printf("Nom du fichier (ex: exemple1.txt) : ");
             scanf("%255s", filename);
@@ -59,61 +59,61 @@ int main(void) {
             break;
         }
 
-        /*  2. AFFICHER LISTE ADJ  */
+        /* 2. AFFICHER LISTE ADJ */
         case 2:
-            if (!graphLoaded) { 
-                printf("Charge un graphe d'abord.\n"); 
-                break; 
+            if (!graphLoaded) {
+                printf("Charge un graphe d'abord.\n");
+                break;
             }
             printListe_d_adjacence(&g);
             break;
 
-        /*  3. CHECK MARKOV  */
+        /* 3. CHECK MARKOV */
         case 3:
-            if (!graphLoaded) { 
-                printf("Charge un graphe d'abord.\n"); 
-                break; 
+            if (!graphLoaded) {
+                printf("Charge un graphe d'abord.\n");
+                break;
             }
-            checkMarkov(&g);   // renvoie void
+            checkMarkov(&g);
             break;
 
-        /*  4. MERMAID GRAPHE ORIGINAL  */
+        /* 4. MERMAID GRAPHE ORIGINAL */
         case 4:
-            if (!graphLoaded) { 
-                printf("Charge un graphe d'abord.\n"); 
-                break; 
+            if (!graphLoaded) {
+                printf("Charge un graphe d'abord.\n");
+                break;
             }
             visualMermaid(&g, "graph.mmd");
             printf("Graphe original généré → graph.mmd\n");
             break;
 
-        /*  5. TARJAN  */
+        /* 5. TARJAN */
         case 5:
-            if (!graphLoaded) { 
-                printf("Charge un graphe d'abord.\n"); 
-                break; 
+            if (!graphLoaded) {
+                printf("Charge un graphe d'abord.\n");
+                break;
             }
 
-            if (p) { 
-                freePartition(p); 
-                p = NULL; 
+            if (p) {
+                freePartition(p);
+                p = NULL;
             }
 
             p = tarjan(&g);
-            if (!p) { 
-                printf("Erreur pendant Tarjan.\n"); 
-                break; 
+            if (!p) {
+                printf("Erreur pendant Tarjan.\n");
+                break;
             }
 
             partitionComputed = 1;
             printPartition(p);
             break;
 
-        /*  6. LIENS ENTRE CLASSES  */
+        /* 6. LIENS ENTRE CLASSES */
         case 6:
-            if (!partitionComputed) { 
-                printf("Lance Tarjan d'abord.\n"); 
-                break; 
+            if (!partitionComputed) {
+                printf("Lance Tarjan d'abord.\n");
+                break;
             }
 
             if (links) {
@@ -123,26 +123,26 @@ int main(void) {
             }
 
             links = buildClassLinks(&g, p);
-            if (!links) { 
-                printf("Erreur lors de la construction des liens.\n"); 
-                break; 
+            if (!links) {
+                printf("Erreur lors de la construction des liens.\n");
+                break;
             }
 
             linksBuilt = 1;
             printf("Liens entre classes générés.\n");
             break;
 
-        /*  7. RÉDUCTION TRANSITIVE (HASSE)  */
+        /* 7. RÉDUCTION TRANSITIVE (HASSE) */
         case 7:
-            if (!linksBuilt || !links) { 
-                printf("Construis les liens d'abord.\n"); 
-                break; 
+            if (!linksBuilt || !links) {
+                printf("Construis les liens d'abord.\n");
+                break;
             }
             removeTransitiveLinks(links);
             printf("Liens transitifs supprimés.\n");
             break;
 
-        /*  8. MERMAID HASSE  */
+        /* 8. MERMAID HASSE */
         case 8:
             if (!partitionComputed || !linksBuilt || !links) {
                 printf("Faut d'abord lancer Tarjan et créer les liens.\n");
@@ -152,7 +152,7 @@ int main(void) {
             printf("Diagramme de Hasse généré → hasse.mmd\n");
             break;
 
-        /*  9. ANALYSE PROPRIÉTÉS  */
+        /* 9. ANALYSE PROPRIÉTÉS */
         case 9:
             if (!partitionComputed || !linksBuilt || !links) {
                 printf("Faut d'abord lancer Tarjan et créer les liens.\n");
@@ -161,7 +161,7 @@ int main(void) {
             analyzeGraphProperties(p, links);
             break;
 
-        /*  10. TESTS EXEMPLE MÉTÉO (M, M^3, M^7)  */
+        /* 10. TESTS EXEMPLE MÉTÉO (M, M^3, M^7) */
         case 10: {
             const char *filepath = "data/exemple_meteo.txt";
             printf("\n--- Tests sur %s ---\n", filepath);
@@ -177,14 +177,14 @@ int main(void) {
             printMatrix(M);
 
             // M^3
-            t_matrix *M2 = multiplyMatrix(M, M);      // M^2
-            t_matrix *M3 = multiplyMatrix(M2, M);     // M^3
+            t_matrix *M2 = multiplyMatrix(M, M);
+            t_matrix *M3 = multiplyMatrix(M2, M);
             printf("\nMatrice M^3 :\n");
             printMatrix(M3);
 
             // M^7
             t_matrix *Mk = createZeroMatrix(M->n);
-            copyMatrix(M, Mk);  // Mk = M (puissance 1)
+            copyMatrix(M, Mk);
             for (int k = 2; k <= 7; ++k) {
                 t_matrix *tmp = multiplyMatrix(Mk, M);
                 freeMatrix(Mk);
@@ -193,7 +193,6 @@ int main(void) {
             printf("\nMatrice M^7 :\n");
             printMatrix(Mk);
 
-            // libération
             freeMatrix(M);
             freeMatrix(M2);
             freeMatrix(M3);
@@ -203,7 +202,7 @@ int main(void) {
             break;
         }
 
-        /*  11. TEST DE CONVERGENCE M^k POUR UN FICHIER */
+        /* 11. TEST DE CONVERGENCE M^k POUR UN FICHIER */
         case 11: {
             printf("Nom du fichier (ex: exemple1.txt) : ");
             scanf("%255s", filename);
@@ -231,7 +230,7 @@ int main(void) {
             double last_diff = 0.0;
 
             for (int k = 2; k <= max_iter; ++k) {
-                t_matrix *Mk = multiplyMatrix(Mk_prev, M);  // M^k = M^{k-1} * M
+                t_matrix *Mk = multiplyMatrix(Mk_prev, M);  // M^k
                 last_diff = diffMatrix(Mk, Mk_prev);
 
                 if (last_diff < eps) {
@@ -247,7 +246,7 @@ int main(void) {
             }
 
             if (!converged) {
-                printf("Pas de convergence (diff >= %.6f) après %d itérations.\n", 
+                printf("Pas de convergence (diff >= %.6f) après %d itérations.\n",
                        eps, max_iter);
                 printf("Dernière diff = %.6f\n", last_diff);
             }
@@ -257,8 +256,8 @@ int main(void) {
             break;
         }
 
-        /*  0. QUITTER  */
         case 0:
+            printf("Bye !\n");
             break;
 
         default:
@@ -274,5 +273,3 @@ int main(void) {
 
     return 0;
 }
-
-

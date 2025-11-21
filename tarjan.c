@@ -3,13 +3,14 @@
 #include <string.h>
 #include "tarjan.h"
 
-/* Structure de pile et ces fonctions */
+/* ====== Structure de pile interne (utilisée seulement par Tarjan) ====== */
 typedef struct {
     int *data;
     int top;
     int capacite;
 } Stack;
 
+/* Crée une pile de taille donnée */
 static Stack* createStack(int capacite) {
     Stack *pile = (Stack*)malloc(sizeof(Stack));
     if (!pile) return NULL;
@@ -24,12 +25,16 @@ static Stack* createStack(int capacite) {
     pile->capacite = capacite;
     return pile;
 }
+
+/* Empile un indice de sommet */
 static void push(Stack *pile, int val) {
     if (!pile) return;
     if (pile->top < pile->capacite - 1) {
         pile->data[++pile->top] = val;
     }
 }
+
+/* Dépile un indice de sommet */
 static int pop(Stack *pile) {
     if (!pile) return -1;
     if (pile->top >= 0) {
@@ -37,14 +42,16 @@ static int pop(Stack *pile) {
     }
     return -1;
 }
+
+/* Libère la mémoire de la pile */
 static void freeStack(Stack *pile) {
     if (!pile) return;
     free(pile->data);
     free(pile);
 }
 
-/* Sous fonction pour l'algorithme de Tarjan */
-t_tarjan_vertex* initTarjanVertex(const liste_d_adjacence *g) {
+/* Initialise le tableau de sommets pour l'algorithme de Tarjan */
+t_tarjan_vertex* initTarjanVertices(const liste_d_adjacence *g) {
     if (!g || g->n <= 0) return NULL;
 
     t_tarjan_vertex *tab = (t_tarjan_vertex*)malloc(sizeof(t_tarjan_vertex) * g->n);
@@ -59,7 +66,7 @@ t_tarjan_vertex* initTarjanVertex(const liste_d_adjacence *g) {
     return tab;
 }
 
-/* Parcours récursif de Tarjan */
+/* Parcours récursif de Tarjan (DFS) pour trouver les composantes fortement connexes */
 static void parcours(int v,
                      const liste_d_adjacence *g,
                      t_tarjan_vertex *sommets,
@@ -77,7 +84,7 @@ static void parcours(int v,
     /* Parcours des successeurs de v */
     cell *cur = g->list[v].head;
     while (cur) {
-        int w = cur->arriv - 1;   // conversion en index 0-based
+        int w = cur->arriv - 1;   // index 0-based
 
         if (sommets[w].num == -1) {
             // Sommet w pas encore visité
@@ -161,7 +168,7 @@ t_stock_classe* tarjan(const liste_d_adjacence *g) {
         return NULL;
     }
 
-    t_tarjan_vertex *sommets = initTarjanVertex(g);
+    t_tarjan_vertex *sommets = initTarjanVertices(g);
     if (!sommets) {
         free(stock->classes);
         free(stock);
@@ -217,4 +224,3 @@ void freePartition(t_stock_classe *p) {
     free(p->classes);
     free(p);
 }
-
