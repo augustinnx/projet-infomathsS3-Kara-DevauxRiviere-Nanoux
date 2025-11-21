@@ -119,6 +119,10 @@ void copyMatrix(const t_matrix *src, t_matrix *dst) {
 }
 
 
+// multiplyMatrix
+// Réalise le produit matriciel C = A * B pour des matrices carrées.
+// Implémente l’algorithme classique en O(n^3).
+// C = A * B (nouvelle matrice)
 t_matrix *multiplyMatrix(const t_matrix *A, const t_matrix *B) {
     if (!A || !B) return NULL;
     if (A->n != B->n) return NULL;
