@@ -18,7 +18,9 @@ int main(void) {
     int choice = -1;
 
     while (choice != 0) {
-        printf("\n===== MENU =====\n");
+        printf("\n//================================\\\\\n")
+        printf("||              MENU              ||\n");
+        printf("\n//================================\\\\\n")
         printf("1. Charger un graphe depuis un fichier (dossier data)\n");
         printf("2. Afficher la liste d'adjacence\n");
         printf("3. Vérifier la propriété de Markov\n");
