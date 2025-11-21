@@ -3,172 +3,218 @@
 #include <string.h>
 #include "tarjan.h"
 
-// Pile pour l'algorithme de Tarjan
+/* Structure de pile et ces fonctions */
 typedef struct {
     int *data;
     int top;
-    int capacity;
+    int capacite;
 } Stack;
 
-Stack* createStack(int capacity) {
-    Stack *s = (Stack*)malloc(sizeof(Stack));
-    s->data = (int*)malloc(sizeof(int) * capacity);
-    s->top = -1;
-    s->capacity = capacity;
-    return s;
-}
+static Stack* createStack(int capacite) {
+    Stack *pile = (Stack*)malloc(sizeof(Stack));
+    if (!pile) return NULL;
 
-void push(Stack *s, int val) {
-    if (s->top < s->capacity - 1) {
-        s->data[++s->top] = val;
+    pile->data = (int*)malloc(sizeof(int) * capacite);
+    if (!pile->data) {
+        free(pile);
+        return NULL;
+    }
+
+    pile->top = -1;
+    pile->capacite = capacite;
+    return pile;
+}
+static void push(Stack *pile, int val) {
+    if (!pile) return;
+    if (pile->top < pile->capacite - 1) {
+        pile->data[++pile->top] = val;
     }
 }
-
-int pop(Stack *s) {
-    if (s->top >= 0) {
-        return s->data[s->top--];
+static int pop(Stack *pile) {
+    if (!pile) return -1;
+    if (pile->top >= 0) {
+        return pile->data[pile->top--];
     }
     return -1;
 }
-
-int isEmpty(Stack *s) {
-    return s->top == -1;
+static void freeStack(Stack *pile) {
+    if (!pile) return;
+    free(pile->data);
+    free(pile);
 }
 
-int contains(Stack *s, int val) {
-    for (int i = 0; i <= s->top; i++) {
-        if (s->data[i] == val) return 1;
-    }
-    return 0;
-}
-
-void freeStack(Stack *s) {
-    if (s) {
-        free(s->data);
-        free(s);
-    }
-}
-
-// Initialisation du tableau de sommets Tarjan
-t_tarjan_vertex* initTarjanVertices(const liste_d_adjacence *g) {
+/* Sous fonction pour l'algorithme de Tarjan */
+t_tarjan_vertex* initTarjanVertex(const liste_d_adjacence *g) {
     if (!g || g->n <= 0) return NULL;
-    
-    t_tarjan_vertex *vertices = (t_tarjan_vertex*)malloc(sizeof(t_tarjan_vertex) * g->n);
+
+    t_tarjan_vertex *tab = (t_tarjan_vertex*)malloc(sizeof(t_tarjan_vertex) * g->n);
+    if (!tab) return NULL;
+
     for (int i = 0; i < g->n; i++) {
-        vertices[i].id = i + 1;
-        vertices[i].num = -1;
-        vertices[i].low = -1;
-        vertices[i].in_stack = 0;
+        tab[i].id       = i + 1;
+        tab[i].num      = -1;
+        tab[i].num_acc  = -1;
+        tab[i].ind_bool = 0;
     }
-    return vertices;
+    return tab;
 }
 
-// Fonction parcours (récursive)
-void parcours(int v, const liste_d_adjacence *g, t_tarjan_vertex *vertices,
-              Stack *stack, int *counter, t_partition *partition) {
-    
-    vertices[v].num = *counter;
-    vertices[v].low = *counter;
-    (*counter)++;
-    
-    push(stack, v);
-    vertices[v].in_stack = 1;
-    
+/* Parcours récursif de Tarjan */
+static void parcours(int v,
+                     const liste_d_adjacence *g,
+                     t_tarjan_vertex *sommets,
+                     Stack *pile,
+                     int *compteur,
+                     t_stock_classe *stock)
+{
+    sommets[v].num = *compteur;
+    sommets[v].num_acc = *compteur;
+    (*compteur)++;
+
+    push(pile, v);
+    sommets[v].ind_bool = 1;
+
+    /* Parcours des successeurs de v */
     cell *cur = g->list[v].head;
     while (cur) {
-        int w = cur->arriv - 1;
-        
-        if (vertices[w].num == -1) {
-            parcours(w, g, vertices, stack, counter, partition);
-            if (vertices[w].low < vertices[v].low) {
-                vertices[v].low = vertices[w].low;
+        int w = cur->arriv - 1;   // conversion en index 0-based
+
+        if (sommets[w].num == -1) {
+            // Sommet w pas encore visité
+            parcours(w, g, sommets, pile, compteur, stock);
+
+            if (sommets[w].num_acc < sommets[v].num_acc) {
+                sommets[v].num_acc = sommets[w].num_acc;
             }
-        } else if (vertices[w].in_stack) {
-            if (vertices[w].num < vertices[v].low) {
-                vertices[v].low = vertices[w].num;
+        } else if (sommets[w].ind_bool) {
+            // w est encore dans la pile
+            if (sommets[w].num < sommets[v].num_acc) {
+                sommets[v].num_acc = sommets[w].num;
             }
         }
-        
+
         cur = cur->next;
     }
-    
-    if (vertices[v].low == vertices[v].num) {
-        t_classe *new_classe = (t_classe*)malloc(sizeof(t_classe));
-        sprintf(new_classe->name, "C%d", partition->nb_classes + 1);
-        new_classe->vertices = NULL;
-        new_classe->size = 0;
-        new_classe->capacity = 4;
-        new_classe->vertices = (t_tarjan_vertex*)malloc(sizeof(t_tarjan_vertex) * new_classe->capacity);
-        
+
+    /* Si v est racine d'une composante fortement connexe */
+    if (sommets[v].num_acc == sommets[v].num) {
+        t_classe nouvelle;
+
+        // Nom de la classe : C1, C2, ...
+        sprintf(nouvelle.name, "C%d", stock->nb_classes + 1);
+
+        nouvelle.taille   = 0;
+        nouvelle.capacite = 4;
+        nouvelle.sommets  = (t_tarjan_vertex*)malloc(sizeof(t_tarjan_vertex) * nouvelle.capacite);
+        if (!nouvelle.sommets) {
+            return;
+        }
+
         int w;
         do {
-            w = pop(stack);
-            vertices[w].in_stack = 0;
-            
-            if (new_classe->size >= new_classe->capacity) {
-                new_classe->capacity *= 2;
-                new_classe->vertices = (t_tarjan_vertex*)realloc(new_classe->vertices, 
-                                        sizeof(t_tarjan_vertex) * new_classe->capacity);
+            w = pop(pile);
+            sommets[w].ind_bool = 0;
+
+            if (nouvelle.taille >= nouvelle.capacite) {
+                nouvelle.capacite *= 2;
+                nouvelle.sommets = (t_tarjan_vertex*)realloc(
+                    nouvelle.sommets,
+                    sizeof(t_tarjan_vertex) * nouvelle.capacite
+                );
+                if (!nouvelle.sommets) {
+                    return;
+                }
             }
-            
-            new_classe->vertices[new_classe->size++] = vertices[w];
+
+            nouvelle.sommets[nouvelle.taille++] = sommets[w];
+
         } while (w != v);
-        
-        if (partition->nb_classes >= partition->capacity) {
-            partition->capacity *= 2;
-            partition->classes = (t_classe*)realloc(partition->classes,
-                                  sizeof(t_classe) * partition->capacity);
+
+        // Ajout de la classe dans le stock
+        if (stock->nb_classes >= stock->capacite) {
+            stock->capacite *= 2;
+            stock->classes = (t_classe*)realloc(
+                stock->classes,
+                sizeof(t_classe) * stock->capacite
+            );
+            if (!stock->classes) {
+                return;
+            }
         }
-        partition->classes[partition->nb_classes++] = *new_classe;
+
+        stock->classes[stock->nb_classes++] = nouvelle;
     }
 }
 
-// Fonction principale Tarjan
-t_partition* tarjan(const liste_d_adjacence *g) {
+/* Applique l'algorithme de Tarjan au graphe et renvoie la structure de classes */
+t_stock_classe* tarjan(const liste_d_adjacence *g) {
     if (!g || g->n <= 0) return NULL;
-    
-    t_partition *partition = (t_partition*)malloc(sizeof(t_partition));
-    partition->nb_classes = 0;
-    partition->capacity = 4;
-    partition->classes = (t_classe*)malloc(sizeof(t_classe) * partition->capacity);
-    
-    t_tarjan_vertex *vertices = initTarjanVertices(g);
-    Stack *stack = createStack(g->n);
-    int counter = 0;
-    
+
+    t_stock_classe *stock = (t_stock_classe*)malloc(sizeof(t_stock_classe));
+    if (!stock) return NULL;
+
+    stock->nb_classes = 0;
+    stock->capacite   = 4;
+    stock->classes    = (t_classe*)malloc(sizeof(t_classe) * stock->capacite);
+    if (!stock->classes) {
+        free(stock);
+        return NULL;
+    }
+
+    t_tarjan_vertex *sommets = initTarjanVertex(g);
+    if (!sommets) {
+        free(stock->classes);
+        free(stock);
+        return NULL;
+    }
+
+    Stack *pile = createStack(g->n);
+    if (!pile) {
+        free(sommets);
+        free(stock->classes);
+        free(stock);
+        return NULL;
+    }
+
+    int compteur = 0;
+
     for (int i = 0; i < g->n; i++) {
-        if (vertices[i].num == -1) {
-            parcours(i, g, vertices, stack, &counter, partition);
+        if (sommets[i].num == -1) {
+            parcours(i, g, sommets, pile, &compteur, stock);
         }
     }
-    
-    freeStack(stack);
-    free(vertices);
-    
-    return partition;
+
+    freeStack(pile);
+    free(sommets);
+
+    return stock;
 }
 
-// Affichage de la partition
-void printPartition(const t_partition *p) {
+/* Affiche les classes obtenues par Tarjan */
+void printPartition(const t_stock_classe *p) {
     if (!p) return;
-    
+
     printf("\n=== Partition en composantes fortement connexes ===\n");
     for (int i = 0; i < p->nb_classes; i++) {
-        printf("Composante %s: {", p->classes[i].name);
-        for (int j = 0; j < p->classes[i].size; j++) {
-            printf("%d", p->classes[i].vertices[j].id);
-            if (j < p->classes[i].size - 1) printf(",");
+        printf("%s : {", p->classes[i].name);
+        for (int j = 0; j < p->classes[i].taille; j++) {
+            printf("%d", p->classes[i].sommets[j].id);
+            if (j < p->classes[i].taille - 1) {
+                printf(",");
+            }
         }
         printf("}\n");
     }
 }
 
-// Libération mémoire
-void freePartition(t_partition *p) {
+/* Libère toute la mémoire associée aux classes */
+void freePartition(t_stock_classe *p) {
     if (!p) return;
+
     for (int i = 0; i < p->nb_classes; i++) {
-        free(p->classes[i].vertices);
+        free(p->classes[i].sommets);
     }
     free(p->classes);
     free(p);
 }
+
