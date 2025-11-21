@@ -192,5 +192,3 @@ int visualMermaid(const liste_d_adjacence *g, const char *filepath)
     return 0;
 }
 
-
-// -Étape 4-
