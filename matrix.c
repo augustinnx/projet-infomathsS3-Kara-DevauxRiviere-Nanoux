@@ -3,13 +3,17 @@
 #include <math.h>
 #include "matrix.h"
 
-/* ====== Gestion de base ====== */
+//Gestion De base
 
+// createZeroMatrix
+// Crée une matrice carrée n x n remplie de zéros.
+// Alloue la structure, le tableau de pointeurs de lignes,
+// puis chaque ligne individuellement. Nettoyage complet en cas d’échec.
 t_matrix *createZeroMatrix(int n) {
-    if (n <= 0) return NULL;
+    if (n <= 0) return NULL;  // Taille invalide
 
     t_matrix *m = (t_matrix *)malloc(sizeof(t_matrix));
-    if (!m) return NULL;
+    if (!m) return NULL; // Échec d’allocation de la structure
 
     m->n = n;
     m->data = (double **)malloc(sizeof(double *) * n);
@@ -35,6 +39,9 @@ t_matrix *createZeroMatrix(int n) {
     return m;
 }
 
+// freeMatrix
+// Libère une matrice : d'abord chaque ligne,
+// puis le tableau de pointeurs, puis la structure.
 void freeMatrix(t_matrix *m) {
     if (!m) return;
     if (m->data) {
@@ -46,6 +53,9 @@ void freeMatrix(t_matrix *m) {
     free(m);
 }
 
+// printMatrix
+// Affiche le contenu d'une matrice en format lisible.
+// Utile pour le débogage.
 void printMatrix(const t_matrix *m) {
     if (!m) {
         printf("(matrice NULL)\n");
@@ -60,8 +70,12 @@ void printMatrix(const t_matrix *m) {
     }
 }
 
-/* ====== Partie 3.1 : construction et opérations de base ====== */
+//Partie 3.1
 
+// graphToTransitionMatrix
+// Convertit une liste d’adjacence en matrice de transition.
+// Pour chaque arête i -> j, place la probabilité correspondante dans M[i][j].
+// Les sommets du graphe sont indexés en 1-based, la matrice en 0-based.
 // Construit la matrice de transition M à partir de la liste d'adjacence g
 t_matrix *graphToTransitionMatrix(const liste_d_adjacence *g) {
     if (!g || g->n <= 0 || !g->list) return NULL;
@@ -86,6 +100,9 @@ t_matrix *graphToTransitionMatrix(const liste_d_adjacence *g) {
     return M;
 }
 
+// copyMatrix
+// Copie le contenu d'une matrice src dans dst.
+// Les deux matrices doivent être de même dimension.
 // Recopie src dans dst (même taille n)
 void copyMatrix(const t_matrix *src, t_matrix *dst) {
     if (!src || !dst) return;
@@ -99,6 +116,9 @@ void copyMatrix(const t_matrix *src, t_matrix *dst) {
     }
 }
 
+// multiplyMatrix
+// Réalise le produit matriciel C = A * B pour des matrices carrées.
+// Implémente l’algorithme classique en O(n^3).
 // C = A * B (nouvelle matrice)
 t_matrix *multiplyMatrix(const t_matrix *A, const t_matrix *B) {
     if (!A || !B) return NULL;
@@ -143,7 +163,7 @@ double diffMatrix(const t_matrix *A, const t_matrix *B) {
     return sum;
 }
 
-/* ====== Partie 3.2 : sous-matrice d'une classe ====== */
+//Partie 3.2
 
 // Sous-matrice correspondant à la classe part->classes[compo_index]
 // On suppose que t_classe ressemble à :
@@ -163,12 +183,12 @@ t_matrix *subMatrix(const t_matrix *M, const t_partition *part, int compo_index)
     
     for (int i = 0; i < k; ++i) {
         int u_id = classe->vertices[i].id;    // 1..M->n
-        int u = u_id - 1;                     
+        int u = u_id - 1;                      // Conversion en 0-based
         for (int j = 0; j < k; ++j) {
             int v_id = classe->vertices[j].id;
             int v = v_id - 1;
             if (u >= 0 && u < M->n && v >= 0 && v < M->n) {
-                S->data[i][j] = M->data[u][v];
+                S->data[i][j] = M->data[u][v];  // Copie de la valeur correspondante
             } else {
                 S->data[i][j] = 0.0;
             }
