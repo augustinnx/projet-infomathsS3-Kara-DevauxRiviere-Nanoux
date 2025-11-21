@@ -209,7 +209,7 @@ void generateHasseDiagram(const t_partition *p,
     printf("Diagramme de Hasse généré: %s\n", filepath);
 }
 
-/* Analyse les caractéristiques du graphe à partir des classes et des liens. */
+// Analyse les caractéristiques du graphe à partir des classes et des liens. 
 void analyzeGraphProperties(const t_partition *p, const t_link_array *links) {
     printf("\n=== Caractéristiques du graphe ===\n\n");
 
