@@ -39,10 +39,3 @@ int buildLinksFromWeightedMatrix(int n, double **mat, double threshold, t_link_a
 
  // @brief Libère la mémoire d'un t_link_array.
 
-void freeLinkArray(t_link_array *arr);
-int* createVertexToClassMap(const t_partition *p, int n);
-t_link_array* buildClassLinks(const liste_d_adjacence *g, const t_partition *p);
-void generateHasseDiagram(const t_partition *p,const t_link_array *links,const char *filepath);
-void analyzeGraphProperties(const t_partition *p, const t_link_array *links);
-
-#endif
