@@ -40,7 +40,7 @@ int main(void) {
 
         switch (choice) {
 
-        /* === 1. CHARGER GRAPHE === */
+        /*  1. CHARGER GRAPHE  */
         case 1: {
             printf("Nom du fichier (ex: exemple1.txt) : ");
             scanf("%255s", filename);
@@ -57,7 +57,7 @@ int main(void) {
             break;
         }
 
-        /* === 2. AFFICHER LISTE ADJ === */
+        /*  2. AFFICHER LISTE ADJ  */
         case 2:
             if (!graphLoaded) { 
                 printf("Charge un graphe d'abord.\n"); 
@@ -66,7 +66,7 @@ int main(void) {
             printListe_d_adjacence(&g);
             break;
 
-        /* === 3. CHECK MARKOV === */
+        /*  3. CHECK MARKOV  */
         case 3:
             if (!graphLoaded) { 
                 printf("Charge un graphe d'abord.\n"); 
