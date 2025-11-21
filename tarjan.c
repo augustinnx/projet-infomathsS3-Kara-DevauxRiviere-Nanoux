@@ -3,12 +3,7 @@
 #include <string.h>
 #include "tarjan.h"
 
-// Pile pour l'algorithme de Tarjan
-typedef struct {
-    int *data;
-    int top;
-    int capacity;
-} Stack;
+
 
 Stack* createStack(int capacity) {
     Stack *s = (Stack*)malloc(sizeof(Stack));
