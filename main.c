@@ -150,7 +150,7 @@ int main(void) {
             printf("Diagramme de Hasse généré → hasse.mmd\n");
             break;
 
-        /* === 9. ANALYSE PROPRIÉTÉS === */
+        /*  9. ANALYSE PROPRIÉTÉS  */
         case 9:
             if (!partitionComputed || !linksBuilt || !links) {
                 printf("Faut d'abord lancer Tarjan et créer les liens.\n");
@@ -159,7 +159,7 @@ int main(void) {
             analyzeGraphProperties(p, links);
             break;
 
-        /* === 10. TESTS EXEMPLE MÉTÉO (M, M^3, M^7) === */
+        /*  10. TESTS EXEMPLE MÉTÉO (M, M^3, M^7)  */
         case 10: {
             const char *filepath = "data/exemple_meteo.txt";
             printf("\n--- Tests sur %s ---\n", filepath);
@@ -201,7 +201,7 @@ int main(void) {
             break;
         }
 
-        /* === 11. TEST DE CONVERGENCE M^k POUR UN FICHIER === */
+        /*  11. TEST DE CONVERGENCE M^k POUR UN FICHIER */
         case 11: {
             printf("Nom du fichier (ex: exemple1.txt) : ");
             scanf("%255s", filename);
@@ -255,7 +255,7 @@ int main(void) {
             break;
         }
 
-        /* === 0. QUITTER === */
+        /*  0. QUITTER  */
         case 0:
             break;
 
