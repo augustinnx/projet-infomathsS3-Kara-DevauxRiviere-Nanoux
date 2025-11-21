@@ -74,19 +74,16 @@ void parcours(int v, const liste_d_adjacence *g, t_tarjan_vertex *vertices,
     push(stack, v);
     vertices[v].in_stack = 1;
     
-    // Parcourir les successeurs de v
     cell *cur = g->list[v].head;
     while (cur) {
-        int w = cur->arriv - 1; // Convertir en index 0
+        int w = cur->arriv - 1;
         
         if (vertices[w].num == -1) {
-            // w pas encore visité
             parcours(w, g, vertices, stack, counter, partition);
             if (vertices[w].low < vertices[v].low) {
                 vertices[v].low = vertices[w].low;
             }
         } else if (vertices[w].in_stack) {
-            // w dans la pile
             if (vertices[w].num < vertices[v].low) {
                 vertices[v].low = vertices[w].num;
             }
@@ -95,7 +92,6 @@ void parcours(int v, const liste_d_adjacence *g, t_tarjan_vertex *vertices,
         cur = cur->next;
     }
     
-    // Si v est racine d'une composante
     if (vertices[v].low == vertices[v].num) {
         t_classe *new_classe = (t_classe*)malloc(sizeof(t_classe));
         sprintf(new_classe->name, "C%d", partition->nb_classes + 1);
@@ -109,7 +105,6 @@ void parcours(int v, const liste_d_adjacence *g, t_tarjan_vertex *vertices,
             w = pop(stack);
             vertices[w].in_stack = 0;
             
-            // Agrandir si nécessaire
             if (new_classe->size >= new_classe->capacity) {
                 new_classe->capacity *= 2;
                 new_classe->vertices = (t_tarjan_vertex*)realloc(new_classe->vertices, 
@@ -119,7 +114,6 @@ void parcours(int v, const liste_d_adjacence *g, t_tarjan_vertex *vertices,
             new_classe->vertices[new_classe->size++] = vertices[w];
         } while (w != v);
         
-        // Ajouter la classe à la partition
         if (partition->nb_classes >= partition->capacity) {
             partition->capacity *= 2;
             partition->classes = (t_classe*)realloc(partition->classes,

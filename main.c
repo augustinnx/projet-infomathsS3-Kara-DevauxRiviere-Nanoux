@@ -257,7 +257,6 @@ int main(void) {
 
         /* === 0. QUITTER === */
         case 0:
-            printf("Bye !\n");
             break;
 
         default:

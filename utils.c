@@ -67,10 +67,9 @@ void printListe_d_adjacence(const liste_d_adjacence *G) {
 
 // Lire la liste d'adjacence 
 liste_d_adjacence readGraph(const char *filename) {
-    FILE *file = fopen(filename, "rt"); // read-only, text
+    FILE *file = fopen(filename, "rt"); 
     int nbvert, depart, arrivee;
     float proba;
-    // declarer la variable pour la liste d’adjacence
     liste_d_adjacence G;
 
     if (file==NULL)
@@ -78,28 +77,22 @@ liste_d_adjacence readGraph(const char *filename) {
         perror("Could not open file for reading");
         exit(EXIT_FAILURE);
     }
-    // first line contains number of vertices
     if (fscanf(file, "%d", &nbvert) != 1)
     {
         perror("Could not read number of vertices");
         fclose(file);
         exit(EXIT_FAILURE);
     }
-    // Initialiser une liste d’adjacence vide à partir du nombre de sommets
     G = createEmptyGraph(nbvert);
 
     while (fscanf(file, "%d %d %f", &depart, &arrivee, &proba) == 3)
     {
-        // on obtient, pour chaque ligne du fichier les valeurs
-        // depart, arrivee, et proba
-        // Ajouter l’arête qui va de ‘depart’ à ‘arrivée’ avec la probabilité ‘proba’ dans la liste d’adjacence
         if (depart >= 1 && depart <= G.n) {
             addCell(&G.list[depart - 1], arrivee, proba);
         }
     }
 
     fclose(file);
-    // return la liste d’adjacence remplie;
     return G;
 }
 
@@ -141,14 +134,12 @@ const char *getID(int i)
     char temp[10];
     int index = 0;
 
-    i--; // Ajuste pour un index 0
+    i--; 
     while (i >= 0)
     {
         temp[index++] = 'A' + (i % 26);
         i = (i / 26) - 1;
     }
-
-    // Inversion pour obtenir l’ordre correct
     for (int j = 0; j < index; j++)
     {
         buffer[j] = temp[index - j - 1];

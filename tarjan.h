@@ -3,27 +3,27 @@
 
 #include "utils.h"
 
-// Structure pour un sommet dans Tarjan
+// Structure pour un sommet 
 typedef struct {
-    int id;              // Numéro du sommet (1..n)
-    int num;             // Numéro de visite
-    int low;             // Numéro accessible
-    int in_stack;        // Booléen (0 ou 1)
+    int id;              
+    int num;             
+    int low;             
+    int in_stack;        
 } t_tarjan_vertex;
 
 // Structure pour une classe/composante
 typedef struct {
-    char name[10];             // "C1", "C2", etc.
-    t_tarjan_vertex *vertices; // Tableau dynamique de sommets
-    int size;                  // Nombre de sommets
-    int capacity;              // Capacité du tableau
+    char name[10];             
+    t_tarjan_vertex *vertices; 
+    int size;                  
+    int capacity;              
 } t_classe;
 
 // Structure pour la partition
 typedef struct {
-    t_classe *classes;   // Tableau dynamique de classes
-    int nb_classes;      // Nombre de classes
-    int capacity;        // Capacité du tableau
+    t_classe *classes;   
+    int nb_classes;      
+    int capacity;        
 } t_partition;
 
 // Fonctions principales
