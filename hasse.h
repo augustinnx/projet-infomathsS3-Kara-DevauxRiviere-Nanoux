@@ -2,7 +2,7 @@
 #define __HASSE_H__
 
 #include <stddef.h>
-#include "tarjan.h"   // pour t_partition :contentReference[oaicite:5]{index=5}
+#include "tarjan.h"   
 #include "utils.h"    // pour liste_d_adjacence :contentReference[oaicite:6]{index=6}
 
 /* ========== Types de liens pour le diagramme de Hasse ========== */
