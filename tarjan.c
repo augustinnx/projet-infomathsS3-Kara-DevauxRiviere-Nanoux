@@ -49,7 +49,19 @@ void freeStack(Stack *s) {
     }
 }
 
-
+// Initialisation du tableau de sommets Tarjan
+t_tarjan_vertex* initTarjanVertices(const liste_d_adjacence *g) {
+    if (!g || g->n <= 0) return NULL;
+    
+    t_tarjan_vertex *vertices = (t_tarjan_vertex*)malloc(sizeof(t_tarjan_vertex) * g->n);
+    for (int i = 0; i < g->n; i++) {
+        vertices[i].id = i + 1;
+        vertices[i].num = -1;
+        vertices[i].low = -1;
+        vertices[i].in_stack = 0;
+    }
+    return vertices;
+}
 
 // Fonction parcours (récursive)
 void parcours(int v, const liste_d_adjacence *g, t_tarjan_vertex *vertices,
