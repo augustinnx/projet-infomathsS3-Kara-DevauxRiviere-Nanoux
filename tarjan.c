@@ -172,5 +172,3 @@ void freePartition(t_partition *p) {
     free(p->classes);
     free(p);
 }
-
-// Création d'une table de correspondance sommet -> classe
