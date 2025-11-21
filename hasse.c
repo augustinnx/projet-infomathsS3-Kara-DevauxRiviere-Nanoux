@@ -100,9 +100,9 @@ int* createVertexToClassMap(const t_partition *p, int n) {
     return map;
 }
 
-/* Construit les liens entre classes à partir du graphe (liste_d_adjacence) et
- * de la partition (t_partition). Retourne un t_link_array* alloué dynamiquement.
- */
+// Construit les liens entre classes à partir du graphe (liste_d_adjacence) et
+ // de la partition (t_partition). Retourne un t_link_array* alloué dynamiquement.
+
 t_link_array* buildClassLinks(const liste_d_adjacence *g, const t_partition *p) {
     t_link_array *links = (t_link_array*)malloc(sizeof(t_link_array));
     if (!links) return NULL;
@@ -168,7 +168,7 @@ t_link_array* buildClassLinks(const liste_d_adjacence *g, const t_partition *p) 
     return links;
 }
 
-/* Génère le diagramme de Hasse entre classes au format Mermaid. */
+// Génère le diagramme de Hasse entre classes au format Mermaid. 
 void generateHasseDiagram(const t_partition *p,
                           const t_link_array *links,
                           const char *filepath) {
