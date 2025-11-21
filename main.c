@@ -75,7 +75,7 @@ int main(void) {
             checkMarkov(&g);   // renvoie void
             break;
 
-        /* === 4. MERMAID GRAPHE ORIGINAL === */
+        /*  4. MERMAID GRAPHE ORIGINAL  */
         case 4:
             if (!graphLoaded) { 
                 printf("Charge un graphe d'abord.\n"); 
@@ -85,7 +85,7 @@ int main(void) {
             printf("Graphe original généré → graph.mmd\n");
             break;
 
-        /* === 5. TARJAN === */
+        /*  5. TARJAN  */
         case 5:
             if (!graphLoaded) { 
                 printf("Charge un graphe d'abord.\n"); 
@@ -107,7 +107,7 @@ int main(void) {
             printPartition(p);
             break;
 
-        /* === 6. LIENS ENTRE CLASSES === */
+        /*  6. LIENS ENTRE CLASSES  */
         case 6:
             if (!partitionComputed) { 
                 printf("Lance Tarjan d'abord.\n"); 
@@ -130,7 +130,7 @@ int main(void) {
             printf("Liens entre classes générés.\n");
             break;
 
-        /* === 7. RÉDUCTION TRANSITIVE (HASSE) === */
+        /*  7. RÉDUCTION TRANSITIVE (HASSE)  */
         case 7:
             if (!linksBuilt || !links) { 
                 printf("Construis les liens d'abord.\n"); 
@@ -140,7 +140,7 @@ int main(void) {
             printf("Liens transitifs supprimés.\n");
             break;
 
-        /* === 8. MERMAID HASSE === */
+        /*  8. MERMAID HASSE  */
         case 8:
             if (!partitionComputed || !linksBuilt || !links) {
                 printf("Faut d'abord lancer Tarjan et créer les liens.\n");
