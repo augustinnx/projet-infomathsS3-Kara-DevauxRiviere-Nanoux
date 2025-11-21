@@ -107,7 +107,7 @@ t_matrix *multiplyMatrix(const t_matrix *A, const t_matrix *B) {
     int n = A->n;
     t_matrix *C = createZeroMatrix(n);
     if (!C) return NULL;
-
+    // Produit matriciel classique
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
             double sum = 0.0;
@@ -120,6 +120,11 @@ t_matrix *multiplyMatrix(const t_matrix *A, const t_matrix *B) {
 
     return C;
 }
+
+ //diffMatrix
+ //Calcule la différence absolue totale entre deux matrices :
+ //Somme de |a_ij - b_ij| pour tout i, j.
+ //Utile pour estimer la convergence dans les chaînes de Markov.
 
 // diff(A, B) = somme |a_ij - b_ij|
 double diffMatrix(const t_matrix *A, const t_matrix *B) {
