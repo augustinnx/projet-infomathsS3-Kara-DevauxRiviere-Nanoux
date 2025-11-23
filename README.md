@@ -50,7 +50,7 @@ Ce projet implémente une suite d'outils pour l'étude des **graphes de Markov**
 - ✅ Calcul de puissances matricielles (M², M³, Mⁿ)
 - ✅ Détection de convergence
 - ✅ Extraction de sous-matrices par classe
-- ✅ Calcul de distributions stationnaires
+- ❌ Calcul de distributions stationnaires
 
 ---
 
