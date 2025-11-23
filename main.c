@@ -243,7 +243,7 @@ int main(void) {
         }
 
         case 0:
-            printf("Bye !\n");
+            
             break;
 
         default:
