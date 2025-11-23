@@ -5,25 +5,25 @@
 
 /* Structure pour un sommet dans l'algorithme de Tarjan */
 typedef struct {
-    int id;        // Numéro du sommet (1..n)
-    int num;       // Numéro de visite
-    int num_acc;   // Numéro accessible (ancien low)
-    int ind_bool;  // Indicateur : dans la pile ? (0 ou 1)
+    int id;        
+    int num;       
+    int num_acc;   
+    int ind_bool; 
 } t_tarjan_vertex;
 
 /* Structure pour une classe / composante fortement connexe */
 typedef struct {
-    char name[10];        // "C1", "C2", ...
-    t_tarjan_vertex *sommets; // Tableau dynamique de sommets
-    int taille;               // Nombre de sommets
-    int capacite;             // Capacité allouée
+    char name[10];        
+    t_tarjan_vertex *sommets; 
+    int taille;               
+    int capacite;             
 } t_classe;
 
 /* Structure pour stocker toutes les classes (partition du graphe) */
 typedef struct {
-    t_classe *classes; // Tableau dynamique de classes
-    int nb_classes;    // Nombre total de classes
-    int capacite;      // Capacité allouée
+    t_classe *classes; 
+    int nb_classes;    
+    int capacite;     
 } t_stock_classe;
 
 /* Initialise le tableau de sommets pour l'algorithme de Tarjan */

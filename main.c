@@ -41,8 +41,6 @@ int main(void) {
         }
 
         switch (choice) {
-
-        /* 1. CHARGER GRAPHE */
         case 1: {
             printf("Nom du fichier (ex: exemple1.txt) : ");
             scanf("%255s", filename);
@@ -59,7 +57,6 @@ int main(void) {
             break;
         }
 
-        /* 2. AFFICHER LISTE ADJ */
         case 2:
             if (!graphLoaded) {
                 printf("Charge un graphe d'abord.\n");
@@ -68,7 +65,6 @@ int main(void) {
             printListe_d_adjacence(&g);
             break;
 
-        /* 3. CHECK MARKOV */
         case 3:
             if (!graphLoaded) {
                 printf("Charge un graphe d'abord.\n");
@@ -77,7 +73,6 @@ int main(void) {
             checkMarkov(&g);
             break;
 
-        /* 4. MERMAID GRAPHE ORIGINAL */
         case 4:
             if (!graphLoaded) {
                 printf("Charge un graphe d'abord.\n");
@@ -87,7 +82,6 @@ int main(void) {
             printf("Graphe original généré → graph.mmd\n");
             break;
 
-        /* 5. TARJAN */
         case 5:
             if (!graphLoaded) {
                 printf("Charge un graphe d'abord.\n");
@@ -109,7 +103,6 @@ int main(void) {
             printPartition(p);
             break;
 
-        /* 6. LIENS ENTRE CLASSES */
         case 6:
             if (!partitionComputed) {
                 printf("Lance Tarjan d'abord.\n");
@@ -117,7 +110,7 @@ int main(void) {
             }
 
             if (links) {
-                free(links->links);
+                freeLinkArray(links);
                 free(links);
                 links = NULL;
             }
@@ -132,7 +125,6 @@ int main(void) {
             printf("Liens entre classes générés.\n");
             break;
 
-        /* 7. RÉDUCTION TRANSITIVE (HASSE) */
         case 7:
             if (!linksBuilt || !links) {
                 printf("Construis les liens d'abord.\n");
@@ -142,7 +134,6 @@ int main(void) {
             printf("Liens transitifs supprimés.\n");
             break;
 
-        /* 8. MERMAID HASSE */
         case 8:
             if (!partitionComputed || !linksBuilt || !links) {
                 printf("Faut d'abord lancer Tarjan et créer les liens.\n");
@@ -152,7 +143,6 @@ int main(void) {
             printf("Diagramme de Hasse généré → hasse.mmd\n");
             break;
 
-        /* 9. ANALYSE PROPRIÉTÉS */
         case 9:
             if (!partitionComputed || !linksBuilt || !links) {
                 printf("Faut d'abord lancer Tarjan et créer les liens.\n");
@@ -161,7 +151,6 @@ int main(void) {
             analyzeGraphProperties(p, links);
             break;
 
-        /* 10. TESTS EXEMPLE MÉTÉO (M, M^3, M^7) */
         case 10: {
             const char *filepath = "data/exemple_meteo.txt";
             printf("\n--- Tests sur %s ---\n", filepath);
@@ -176,13 +165,11 @@ int main(void) {
             printf("\nMatrice M :\n");
             printMatrix(M);
 
-            // M^3
             t_matrix *M2 = multiplyMatrix(M, M);
             t_matrix *M3 = multiplyMatrix(M2, M);
             printf("\nMatrice M^3 :\n");
             printMatrix(M3);
 
-            // M^7
             t_matrix *Mk = createZeroMatrix(M->n);
             copyMatrix(M, Mk);
             for (int k = 2; k <= 7; ++k) {
@@ -202,7 +189,6 @@ int main(void) {
             break;
         }
 
-        /* 11. TEST DE CONVERGENCE M^k POUR UN FICHIER */
         case 11: {
             printf("Nom du fichier (ex: exemple1.txt) : ");
             scanf("%255s", filename);
@@ -224,13 +210,13 @@ int main(void) {
             int n = M->n;
 
             t_matrix *Mk_prev = createZeroMatrix(n);
-            copyMatrix(M, Mk_prev);   // M^1
+            copyMatrix(M, Mk_prev);
 
             int converged = 0;
             double last_diff = 0.0;
 
             for (int k = 2; k <= max_iter; ++k) {
-                t_matrix *Mk = multiplyMatrix(Mk_prev, M);  // M^k
+                t_matrix *Mk = multiplyMatrix(Mk_prev, M);
                 last_diff = diffMatrix(Mk, Mk_prev);
 
                 if (last_diff < eps) {
@@ -267,7 +253,7 @@ int main(void) {
 
     if (p) freePartition(p);
     if (links) {
-        free(links->links);
+        freeLinkArray(links);
         free(links);
     }
 

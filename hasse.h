@@ -2,47 +2,41 @@
 #define __HASSE_H__
 
 #include <stddef.h>
-#include "tarjan.h"   
-#include "utils.h"    // pour liste_d_adjacence :contentReference[oaicite:6]{index=6}
+#include "tarjan.h"
+#include "utils.h"
 
-/*  Types de liens pour le diagramme de Hasse  */
-
+// Structure représentant un lien entre deux classes
 typedef struct {
-    int from;  // 1-based
-    int to;    // 1-based
+    int from;
+    int to;
 } t_link;
 
+// Tableau dynamique de liens pour le diagramme de Hasse
 typedef struct {
     t_link *links;
     int log_size;
     int capacity;
 } t_link_array;
 
-/*  API Hasse générique  */
-
-//
- // @brief Supprime les arêtes transitives (réduction transitive) dans p_link_array.
- //       On conserve uniquement les arêtes de couverture (cover relation).
-
+// Supprime les arêtes transitives dans le diagramme de Hasse
 void removeTransitiveLinks(t_link_array *p_link_array);
 
-
- //@brief Construit la liste de liens (arêtes) à partir d'une matrice d'adjacence pondérée.
- //@param n         nombre de sommets (1..n)
- //@param mat       matrice n x n (double), indices 0..n-1
- //@param threshold seuil (ex: 0.5). On crée un arc i->j si mat[i][j] >= threshold et i!=j
- //@param out       (sortie) tableau dynamique de liens
- //@return 0 si OK, non-0 sinon
- 
+// Construit les liens à partir d'une matrice d'adjacence pondérée
 int buildLinksFromWeightedMatrix(int n, double **mat, double threshold, t_link_array *out);
 
-
- // @brief Libère la mémoire d'un t_link_array.
-
+// Libère la mémoire d'un tableau de liens
 void freeLinkArray(t_link_array *arr);
+
+// Crée une table sommet → classe à partir de la partition
 int* createVertexToClassMap(const t_partition *p, int n);
+
+// Construit les liens entre classes à partir du graphe et de la partition
 t_link_array* buildClassLinks(const liste_d_adjacence *g, const t_partition *p);
-void generateHasseDiagram(const t_partition *p,const t_link_array *links,const char *filepath);
+
+// Génère le diagramme de Hasse au format Mermaid
+void generateHasseDiagram(const t_partition *p, const t_link_array *links, const char *filepath);
+
+// Analyse les propriétés du graphe à partir des classes et des liens
 void analyzeGraphProperties(const t_partition *p, const t_link_array *links);
 
 #endif

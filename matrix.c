@@ -3,17 +3,12 @@
 #include <math.h>
 #include "matrix.h"
 
-//Gestion De base
-
-// createZeroMatrix
-// Crée une matrice carrée n x n remplie de zéros.
-// Alloue la structure, le tableau de pointeurs de lignes,
-// puis chaque ligne individuellement. Nettoyage complet en cas d’échec.
+// Création d'une matrice n x n remplie de 0
 t_matrix *createZeroMatrix(int n) {
-    if (n <= 0) return NULL;  // Taille invalide
+    if (n <= 0) return NULL;
 
     t_matrix *m = (t_matrix *)malloc(sizeof(t_matrix));
-    if (!m) return NULL; // Échec d’allocation de la structure
+    if (!m) return NULL;
 
     m->n = n;
     m->data = (double **)malloc(sizeof(double *) * n);
@@ -25,8 +20,9 @@ t_matrix *createZeroMatrix(int n) {
     for (int i = 0; i < n; ++i) {
         m->data[i] = (double *)malloc(sizeof(double) * n);
         if (!m->data[i]) {
-            // en cas d'échec, cleanup
-            for (int k = 0; k < i; ++k) free(m->data[k]);
+            for (int k = 0; k < i; ++k) {
+                free(m->data[k]);
+            }
             free(m->data);
             free(m);
             return NULL;
@@ -39,9 +35,7 @@ t_matrix *createZeroMatrix(int n) {
     return m;
 }
 
-// freeMatrix
-// Libère une matrice : d'abord chaque ligne,
-// puis le tableau de pointeurs, puis la structure.
+// Libération de la mémoire d'une matrice
 void freeMatrix(t_matrix *m) {
     if (!m) return;
     if (m->data) {
@@ -53,9 +47,7 @@ void freeMatrix(t_matrix *m) {
     free(m);
 }
 
-// printMatrix
-// Affiche le contenu d'une matrice en format lisible.
-// Utile pour le débogage.
+// Affichage d'une matrice carrée
 void printMatrix(const t_matrix *m) {
     if (!m) {
         printf("(matrice NULL)\n");
@@ -70,15 +62,7 @@ void printMatrix(const t_matrix *m) {
     }
 }
 
-//Partie 3.1
-
-
-
-// graphToTransitionMatrix
-// Convertit une liste d’adjacence en matrice de transition.
-// Pour chaque arête i -> j, place la probabilité correspondante dans M[i][j].
-// Les sommets du graphe sont indexés en 1-based, la matrice en 0-based.
-// Construit la matrice de transition M à partir de la liste d'adjacence g
+// Construction de la matrice de transition M à partir du graphe
 t_matrix *graphToTransitionMatrix(const liste_d_adjacence *g) {
     if (!g || g->n <= 0 || !g->list) return NULL;
 
@@ -86,12 +70,10 @@ t_matrix *graphToTransitionMatrix(const liste_d_adjacence *g) {
     t_matrix *M = createZeroMatrix(n);
     if (!M) return NULL;
 
-    // Pour chaque sommet i
     for (int i = 0; i < n; ++i) {
         cell *cur = g->list[i].head;
-        // Pour chaque arête i -> j avec probabilité p
         while (cur) {
-            int j = cur->arriv - 1;          // indices 0-based
+            int j = cur->arriv - 1;
             if (j >= 0 && j < n) {
                 M->data[i][j] = (double)cur->proba;
             }
@@ -102,10 +84,7 @@ t_matrix *graphToTransitionMatrix(const liste_d_adjacence *g) {
     return M;
 }
 
-// copyMatrix
-// Copie le contenu d'une matrice src dans dst.
-// Les deux matrices doivent être de même dimension.
-// Recopie src dans dst (même taille n)
+// Copie du contenu d'une matrice source vers une matrice destination
 void copyMatrix(const t_matrix *src, t_matrix *dst) {
     if (!src || !dst) return;
     if (src->n != dst->n) return;
@@ -118,11 +97,7 @@ void copyMatrix(const t_matrix *src, t_matrix *dst) {
     }
 }
 
-
-// multiplyMatrix
-// Réalise le produit matriciel C = A * B pour des matrices carrées.
-// Implémente l’algorithme classique en O(n^3).
-// C = A * B (nouvelle matrice)
+// Multiplication de deux matrices carrées
 t_matrix *multiplyMatrix(const t_matrix *A, const t_matrix *B) {
     if (!A || !B) return NULL;
     if (A->n != B->n) return NULL;
@@ -130,7 +105,7 @@ t_matrix *multiplyMatrix(const t_matrix *A, const t_matrix *B) {
     int n = A->n;
     t_matrix *C = createZeroMatrix(n);
     if (!C) return NULL;
-    // Produit matriciel classique
+
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
             double sum = 0.0;
@@ -144,12 +119,7 @@ t_matrix *multiplyMatrix(const t_matrix *A, const t_matrix *B) {
     return C;
 }
 
- //diffMatrix
- //Calcule la différence absolue totale entre deux matrices :
- //Somme de |a_ij - b_ij| pour tout i, j.
- //Utile pour estimer la convergence dans les chaînes de Markov.
-
-// diff(A, B) = somme |a_ij - b_ij|
+// Calcul de la somme des différences absolues entre deux matrices
 double diffMatrix(const t_matrix *A, const t_matrix *B) {
     if (!A || !B) return -1.0;
     if (A->n != B->n) return -1.0;
@@ -166,32 +136,26 @@ double diffMatrix(const t_matrix *A, const t_matrix *B) {
     return sum;
 }
 
-//Partie 3.2
-
-// Sous-matrice correspondant à la classe part->classes[compo_index]
-// On suppose que t_classe ressemble à :
-//   name, t_tarjan_vertex* vertices, int size, int capacity
-t_matrix *subMatrix(const t_matrix *M, const t_partition *part, int compo_index) {
+// Extraction de la sous-matrice associée à une composante fortement connexe
+t_matrix *subMatrix(const t_matrix *M, const t_stock_classe *part, int compo_index) {
     if (!M || !part) return NULL;
     if (compo_index < 0 || compo_index >= part->nb_classes) return NULL;
 
     t_classe *classe = &part->classes[compo_index];
-    int k = classe->size;   // nb de sommets dans cette classe
-
+    int k = classe->taille;
     if (k <= 0) return NULL;
 
     t_matrix *S = createZeroMatrix(k);
     if (!S) return NULL;
 
-    
     for (int i = 0; i < k; ++i) {
-        int u_id = classe->vertices[i].id;    // 1..M->n
-        int u = u_id - 1;                      // Conversion en 0-based
+        int u_id = classe->sommets[i].id;
+        int u = u_id - 1;
         for (int j = 0; j < k; ++j) {
-            int v_id = classe->vertices[j].id;
+            int v_id = classe->sommets[j].id;
             int v = v_id - 1;
             if (u >= 0 && u < M->n && v >= 0 && v < M->n) {
-                S->data[i][j] = M->data[u][v];  // Copie de la valeur correspondante
+                S->data[i][j] = M->data[u][v];
             } else {
                 S->data[i][j] = 0.0;
             }

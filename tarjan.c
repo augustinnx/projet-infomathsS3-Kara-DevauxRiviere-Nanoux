@@ -3,14 +3,14 @@
 #include <string.h>
 #include "tarjan.h"
 
-/* ====== Structure de pile interne (utilisée seulement par Tarjan) ====== */
+// Structure de pile utilisée par l'algorithme de Tarjan
 typedef struct {
     int *data;
     int top;
     int capacite;
 } Stack;
 
-/* Crée une pile de taille donnée */
+// Crée une pile de taille donnée
 static Stack* createStack(int capacite) {
     Stack *pile = (Stack*)malloc(sizeof(Stack));
     if (!pile) return NULL;
@@ -26,7 +26,7 @@ static Stack* createStack(int capacite) {
     return pile;
 }
 
-/* Empile un indice de sommet */
+// Empile un indice de sommet
 static void push(Stack *pile, int val) {
     if (!pile) return;
     if (pile->top < pile->capacite - 1) {
@@ -34,7 +34,7 @@ static void push(Stack *pile, int val) {
     }
 }
 
-/* Dépile un indice de sommet */
+// Dépile un indice de sommet
 static int pop(Stack *pile) {
     if (!pile) return -1;
     if (pile->top >= 0) {
@@ -43,14 +43,14 @@ static int pop(Stack *pile) {
     return -1;
 }
 
-/* Libère la mémoire de la pile */
+// Libère la mémoire de la pile
 static void freeStack(Stack *pile) {
     if (!pile) return;
     free(pile->data);
     free(pile);
 }
 
-/* Initialise le tableau de sommets pour l'algorithme de Tarjan */
+// Initialise le tableau de sommets pour l'algorithme de Tarjan
 t_tarjan_vertex* initTarjanVertices(const liste_d_adjacence *g) {
     if (!g || g->n <= 0) return NULL;
 
@@ -66,7 +66,7 @@ t_tarjan_vertex* initTarjanVertices(const liste_d_adjacence *g) {
     return tab;
 }
 
-/* Parcours récursif de Tarjan (DFS) pour trouver les composantes fortement connexes */
+// Parcours récursif de Tarjan pour trouver les composantes fortement connexes
 static void parcours(int v,
                      const liste_d_adjacence *g,
                      t_tarjan_vertex *sommets,
@@ -81,20 +81,17 @@ static void parcours(int v,
     push(pile, v);
     sommets[v].ind_bool = 1;
 
-    /* Parcours des successeurs de v */
     cell *cur = g->list[v].head;
     while (cur) {
-        int w = cur->arriv - 1;   // index 0-based
+        int w = cur->arriv - 1;
 
         if (sommets[w].num == -1) {
-            // Sommet w pas encore visité
             parcours(w, g, sommets, pile, compteur, stock);
 
             if (sommets[w].num_acc < sommets[v].num_acc) {
                 sommets[v].num_acc = sommets[w].num_acc;
             }
         } else if (sommets[w].ind_bool) {
-            // w est encore dans la pile
             if (sommets[w].num < sommets[v].num_acc) {
                 sommets[v].num_acc = sommets[w].num;
             }
@@ -103,11 +100,9 @@ static void parcours(int v,
         cur = cur->next;
     }
 
-    /* Si v est racine d'une composante fortement connexe */
     if (sommets[v].num_acc == sommets[v].num) {
         t_classe nouvelle;
 
-        // Nom de la classe : C1, C2, ...
         sprintf(nouvelle.name, "C%d", stock->nb_classes + 1);
 
         nouvelle.taille   = 0;
@@ -137,7 +132,6 @@ static void parcours(int v,
 
         } while (w != v);
 
-        // Ajout de la classe dans le stock
         if (stock->nb_classes >= stock->capacite) {
             stock->capacite *= 2;
             stock->classes = (t_classe*)realloc(
@@ -153,7 +147,7 @@ static void parcours(int v,
     }
 }
 
-/* Applique l'algorithme de Tarjan au graphe et renvoie la structure de classes */
+// Applique l'algorithme de Tarjan au graphe et renvoie la structure de classes
 t_stock_classe* tarjan(const liste_d_adjacence *g) {
     if (!g || g->n <= 0) return NULL;
 
@@ -197,7 +191,7 @@ t_stock_classe* tarjan(const liste_d_adjacence *g) {
     return stock;
 }
 
-/* Affiche les classes obtenues par Tarjan */
+// Affiche les classes obtenues par Tarjan
 void printPartition(const t_stock_classe *p) {
     if (!p) return;
 
@@ -214,7 +208,7 @@ void printPartition(const t_stock_classe *p) {
     }
 }
 
-/* Libère toute la mémoire associée aux classes */
+// Libère toute la mémoire associée aux classes
 void freePartition(t_stock_classe *p) {
     if (!p) return;
 
