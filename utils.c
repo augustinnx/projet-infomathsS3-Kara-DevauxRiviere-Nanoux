@@ -4,34 +4,34 @@
 #include "utils.h"
 
 // Création d'une cellule de liste d'adjacence
-cell *createCell(int arriv, float proba) {
-    cell *newCell = (cell *)malloc(sizeof(cell));
-    newCell->arriv = arriv;
+cellule *createCell(int arriv, float proba) {
+    cellule *newCell = (cellule *)malloc(sizeof(cellule));
+    newCell->sommet_arrive = arriv;
     newCell->proba = proba;
     newCell->next  = NULL;
     return newCell;
 }
 
 // Création d'une liste vide
-list createEmptyList(void) {
-    list l;
+liste createEmptyList(void) {
+    liste l;
     l.head = NULL;
     return l;
 }
 
 // Ajout d'une cellule en tête de liste
-void addCell(list *l, int arriv, float proba) {
-    cell *newCell = createCell(arriv, proba);
+void addCell(liste *l, int sommet_arrive, float proba) {
+    cellule *newCell = createCell(sommet_arrive, proba);
     newCell->next = l->head;
     l->head = newCell;
 }
 
 // Affichage d'une liste chaînée
-void printList(const list *l) {
-    const cell *c = (l ? l->head : NULL);
+void printList(const liste *l) {
+    const cellule *c = (l ? l->head : NULL);
     printf("[head @]");
     while (c) {
-        printf(" -> (%d, %.2f)", c->arriv, c->proba);
+        printf(" -> (%d, %.2f)", c->sommet_arrive, c->proba);
         c = c->next;
     }
     printf("\n");
@@ -43,7 +43,7 @@ liste_d_adjacence createEmptyGraph(int n) {
     G.n = (n > 0 ? n : 0);
     G.list = NULL;
     if (G.n > 0) {
-        G.list = (list *)malloc(sizeof(list) * G.n);
+        G.list = (liste *)malloc(sizeof(liste) * G.n);
         for (int i = 0; i < G.n; ++i) {
             G.list[i] = createEmptyList();
         }
@@ -91,7 +91,7 @@ liste_d_adjacence readGraph(const char *filename) {
     return G;
 }
 
-// Vérification de la propriété de Markov d'un graphe
+// Fonction qui vérifie si un graphe est bien un graphe de Markov (étape 2 - P1)
 void checkMarkov(const liste_d_adjacence *G) {
     if (!G || !G->list || G->n <= 0) {
         printf("Erreur : graphe vide ou non initialisé.\n");
@@ -102,7 +102,7 @@ void checkMarkov(const liste_d_adjacence *G) {
 
     for (int i = 0; i < G->n; ++i) {
         float somme = 0.0f;
-        for (cell *cur = G->list[i].head; cur; cur = cur->next) {
+        for (cellule *cur = G->list[i].head; cur; cur = cur->next) {
             somme += cur->proba;
         }
         if (somme < 0.99f || somme > 1.01f) {
@@ -118,7 +118,7 @@ void checkMarkov(const liste_d_adjacence *G) {
     }
 }
 
-// Conversion d'un indice de sommet en identifiant alphabétique
+// Conversion d'un indice de sommet en identifiant alphabétique (ETAPE3 - P1)
 const char *getID(int i) {
     static char buffer[10];
     char temp[10];
@@ -137,7 +137,7 @@ const char *getID(int i) {
     return buffer;
 }
 
-// Génération d'un fichier Mermaid à partir du graphe
+// Génération d'un fichier Mermaid à partir du graphe (ETAPE3 - P1)
 int visualMermaid(const liste_d_adjacence *g, const char *filepath) {
     if (!g || !g->list || g->n <= 0 || !filepath) {
         fprintf(stderr, "visualMermaid: graphe ou chemin invalide\n");
@@ -166,9 +166,9 @@ int visualMermaid(const liste_d_adjacence *g, const char *filepath) {
         char src[16];
         strcpy(src, getID(i + 1));
 
-        for (cell *cur = g->list[i].head; cur; cur = cur->next) {
+        for (cellule *cur = g->list[i].head; cur; cur = cur->next) {
             char dst[16];
-            strcpy(dst, getID(cur->arriv));
+            strcpy(dst, getID(cur->sommet_arrive));
 
             fprintf(f, "%s -->|%.2f| %s\n", src, cur->proba, dst);
         }

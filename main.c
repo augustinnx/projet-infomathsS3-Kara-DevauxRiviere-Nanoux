@@ -48,7 +48,7 @@ int main(void) {
             char filepath[300];
             snprintf(filepath, sizeof(filepath), "data/%s", filename);
 
-            g = readGraph(filepath);
+            g = readGraph(filepath); // chargement du graphe depuis le fichier (Validation étape1 P1)
             graphLoaded = 1;
             partitionComputed = 0;
             linksBuilt = 0;
@@ -78,7 +78,7 @@ int main(void) {
                 printf("Charge un graphe d'abord.\n");
                 break;
             }
-            visualMermaid(&g, "graph.mmd");
+            visualMermaid(&g, "graph.mmd"); // Etape3 P1
             printf("Graphe original généré → graph.mmd\n");
             break;
 

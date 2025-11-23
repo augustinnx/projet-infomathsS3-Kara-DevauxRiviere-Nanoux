@@ -3,45 +3,55 @@
 
 #include <stdio.h>
 
-typedef struct cell {
-    int arriv;
+// ETAPE 1 - P1
+// Structure1
+typedef struct cellule { 
+    int sommet_arrive;
     float proba;
-    struct cell *next;
-} cell;
+    struct cellule *next;
+} cellule;
 
+// Structure2
 typedef struct {
-    cell *head;
-} list;
+    cellule *head;
+} liste;
 
+// Structure3
 typedef struct {
     int n;
-    list *list;
+    liste *list;
 } liste_d_adjacence;
 
-// Création d'une cellule de liste d'adjacence
-cell *createCell(int arriv, float proba);
+// Fonction pour créer une "cellule" (fct1)
+cellule *createCell(int sommet_arrive, float proba);
 
-// Création d'une liste vide
-list createEmptyList(void);
+// Fonction pour créer une "liste" vide (fct2)
+liste createEmptyList(void);
 
-// Ajout d'une cellule en tête de liste
-void addCell(list *l, int arriv, float proba);
+// Fonction pour ajout une cellule à une liste (fct3)
+void addCell(liste *l, int sommet_arrive, float proba);
 
-// Affichage d'une liste chaînée
-void printList(const list *l);
+// Fonction pour afficher une liste (fct4)
+void printList(const liste *l);
 
-// Création d'une liste d'adjacence vide
+// Fonction pour créer une liste d’adjacence ‘vide’ à partir d’une taille donnée – on crée le tableau de listes, chacune étant initialisée avec la liste vide (fct5)
 liste_d_adjacence createEmptyGraph(int n);
 
-// Affichage de la liste d'adjacence d'un graphe
+// Fonction pour afficher une liste d’adjacence (fct6)
 void printListe_d_adjacence(const liste_d_adjacence *g);
 
-// Lecture d'un graphe depuis un fichier texte
+// Lecture du fichier et construction de la liste d'adjacence. (validation)
 liste_d_adjacence readGraph(const char *filename);
 
-// Vérification de la propriété de Markov d'un graphe
+
+
+// ETAPE 2 - P1
+// Déclaration de la fonction qui vérifie si un graphe est bien un graphe de Markov 
 void checkMarkov(const liste_d_adjacence *G);
 
+
+
+//ETAPE 3 - P1
 // Conversion d'un indice de sommet en identifiant alphabétique
 const char *getID(int i);
 

@@ -30,6 +30,12 @@ void freeLinkArray(t_link_array *arr) {
     arr->capacity = 0;
 }
 
+
+
+// PARTIE 2 - HASSE
+
+// ETAPE 1
+
 // Supprime les arêtes transitives dans le diagramme de Hasse
 void removeTransitiveLinks(t_link_array *p_link_array) {
     if (!p_link_array || p_link_array->log_size <= 1) return;
@@ -63,7 +69,7 @@ void removeTransitiveLinks(t_link_array *p_link_array) {
     }
 }
 
-// Crée un tableau sommet → indice de classe à partir de la partition
+// Créer un tableau qui indique, pour chaque sommet du graphe, la classe à laquelle ilappartient
 int* createVertexToClassMap(const t_stock_classe *p, int n) {
     int *map = (int*)malloc(sizeof(int) * n);
     if (!map) return NULL;
@@ -83,7 +89,10 @@ int* createVertexToClassMap(const t_stock_classe *p, int n) {
     return map;
 }
 
-// Construit les liens entre classes à partir du graphe et de la partition
+
+// ETAPE 2
+
+// Construit les liens entre classes
 t_link_array* buildClassLinks(const liste_d_adjacence *g, const t_stock_classe *p) {
     t_link_array *links = (t_link_array*)malloc(sizeof(t_link_array));
     if (!links) return NULL;
@@ -99,9 +108,9 @@ t_link_array* buildClassLinks(const liste_d_adjacence *g, const t_stock_classe *
 
     for (int i = 0; i < g->n; i++) {
         int Ci = vertex_to_class[i];
-        cell *cur = g->list[i].head;
+        cellule *cur = g->list[i].head;
         while (cur) {
-            int j = cur->arriv - 1;
+            int j = cur->sommet_arrive - 1;
             int Cj = vertex_to_class[j];
 
             if (Ci != Cj) {
@@ -131,9 +140,7 @@ t_link_array* buildClassLinks(const liste_d_adjacence *g, const t_stock_classe *
 }
 
 // Génère le diagramme de Hasse au format Mermaid
-void generateHasseDiagram(const t_stock_classe *p,
-                          const t_link_array *links,
-                          const char *filepath) {
+void generateHasseDiagram(const t_stock_classe *p, const t_link_array *links, const char *filepath) {
     FILE *f = fopen(filepath, "wt");
     if (!f) {
         fprintf(stderr, "Erreur: impossible d'ouvrir %s\n", filepath);
@@ -177,7 +184,10 @@ void generateHasseDiagram(const t_stock_classe *p,
     printf("Diagramme de Hasse généré: %s\n", filepath);
 }
 
-// Analyse les propriétés du graphe à partir des classes et des liens
+
+// ETAPE 3
+
+// Analyse des classes
 void analyzeGraphProperties(const t_stock_classe *p, const t_link_array *links) {
     printf("\n=== Caractéristiques du graphe ===\n\n");
 

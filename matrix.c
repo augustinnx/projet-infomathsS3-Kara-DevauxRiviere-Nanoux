@@ -3,7 +3,12 @@
 #include <math.h>
 #include "matrix.h"
 
-// Création d'une matrice n x n remplie de 0
+
+// PARTIE 3
+
+// ETAPE 1
+
+// 1.2 : Création d'une matrice n x n remplie de 0
 t_matrix *createZeroMatrix(int n) {
     if (n <= 0) return NULL;
 
@@ -35,7 +40,7 @@ t_matrix *createZeroMatrix(int n) {
     return m;
 }
 
-// Libération de la mémoire d'une matrice
+// 1.1 : Libération de la mémoire d'une matrice
 void freeMatrix(t_matrix *m) {
     if (!m) return;
     if (m->data) {
@@ -47,7 +52,7 @@ void freeMatrix(t_matrix *m) {
     free(m);
 }
 
-// Affichage d'une matrice carrée
+// V1 :Affichage d'une matrice carrée
 void printMatrix(const t_matrix *m) {
     if (!m) {
         printf("(matrice NULL)\n");
@@ -62,7 +67,7 @@ void printMatrix(const t_matrix *m) {
     }
 }
 
-// Construction de la matrice de transition M à partir du graphe
+// V1 : Construction de la matrice de transition M à partir du graphe
 t_matrix *graphToTransitionMatrix(const liste_d_adjacence *g) {
     if (!g || g->n <= 0 || !g->list) return NULL;
 
@@ -71,9 +76,9 @@ t_matrix *graphToTransitionMatrix(const liste_d_adjacence *g) {
     if (!M) return NULL;
 
     for (int i = 0; i < n; ++i) {
-        cell *cur = g->list[i].head;
+        cellule *cur = g->list[i].head;
         while (cur) {
-            int j = cur->arriv - 1;
+            int j = cur->sommet_arrive - 1;
             if (j >= 0 && j < n) {
                 M->data[i][j] = (double)cur->proba;
             }
@@ -84,7 +89,7 @@ t_matrix *graphToTransitionMatrix(const liste_d_adjacence *g) {
     return M;
 }
 
-// Copie du contenu d'une matrice source vers une matrice destination
+// 1.3 : Copie du contenu d'une matrice source vers une matrice destination
 void copyMatrix(const t_matrix *src, t_matrix *dst) {
     if (!src || !dst) return;
     if (src->n != dst->n) return;
@@ -97,7 +102,7 @@ void copyMatrix(const t_matrix *src, t_matrix *dst) {
     }
 }
 
-// Multiplication de deux matrices carrées
+// 1.4 : Multiplication de deux matrices carrées
 t_matrix *multiplyMatrix(const t_matrix *A, const t_matrix *B) {
     if (!A || !B) return NULL;
     if (A->n != B->n) return NULL;
@@ -119,7 +124,7 @@ t_matrix *multiplyMatrix(const t_matrix *A, const t_matrix *B) {
     return C;
 }
 
-// Calcul de la somme des différences absolues entre deux matrices
+// 1.5 : Calcul de la somme des différences absolues entre deux matrices
 double diffMatrix(const t_matrix *A, const t_matrix *B) {
     if (!A || !B) return -1.0;
     if (A->n != B->n) return -1.0;
@@ -136,7 +141,10 @@ double diffMatrix(const t_matrix *A, const t_matrix *B) {
     return sum;
 }
 
-// Extraction de la sous-matrice associée à une composante fortement connexe
+
+// ETAPE 2
+
+// 2.1 : Extraction de la sous-matrice associée à une composante fortement connexe
 t_matrix *subMatrix(const t_matrix *M, const t_stock_classe *part, int compo_index) {
     if (!M || !part) return NULL;
     if (compo_index < 0 || compo_index >= part->nb_classes) return NULL;

@@ -5,18 +5,19 @@
 #include "tarjan.h"
 #include "utils.h"
 
-// Représente un lien (arête) entre deux classes
+// PARTIE 2 - ETAPE 1 - HASSE : Créez une structure ‘lien’ qui stockera 2 entiers : un entier pour la classe de « départ », un entier pour la classe d’ « arrivée ».
 typedef struct {
-    int from;  // indice de classe 1-based
-    int to;    // indice de classe 1-based
+    int from; 
+    int to;    
 } t_link;
 
-// Tableau dynamique de liens pour le diagramme de Hasse
+// PARTIE 2 - ETAPE 1 - HASSE :Créez une structure pour stocker plusieurs ‘liens’
 typedef struct {
     t_link *links;
     int log_size;
     int capacity;
 } t_link_array;
+
 
 // Supprime les arêtes transitives dans le diagramme de Hasse
 void removeTransitiveLinks(t_link_array *p_link_array);

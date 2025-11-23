@@ -3,6 +3,11 @@
 #include <string.h>
 #include "tarjan.h"
 
+//PARTIE 2
+
+//ETAPE 2 :
+
+// Question 2.2 : pile
 // Structure de pile utilisée par l'algorithme de Tarjan
 typedef struct {
     int *data;
@@ -49,15 +54,16 @@ static void freeStack(Stack *pile) {
     free(pile->data);
     free(pile);
 }
+// (fin question 2.2)
 
-// Initialise le tableau de sommets pour l'algorithme de Tarjan
+// Question 1.2/2.1: créer un tableau stockant tous les t_tarjan_vertex pour un graphe
 t_tarjan_vertex* initTarjanVertices(const liste_d_adjacence *g) {
     if (!g || g->n <= 0) return NULL;
 
     t_tarjan_vertex *tab = (t_tarjan_vertex*)malloc(sizeof(t_tarjan_vertex) * g->n);
     if (!tab) return NULL;
 
-    for (int i = 0; i < g->n; i++) {
+    for (int i = 0; i < g->n; i++) { // question 2.1 > initalisation
         tab[i].id       = i + 1;
         tab[i].num      = -1;
         tab[i].num_acc  = -1;
@@ -66,13 +72,11 @@ t_tarjan_vertex* initTarjanVertices(const liste_d_adjacence *g) {
     return tab;
 }
 
-// Parcours récursif de Tarjan pour trouver les composantes fortement connexes
-static void parcours(int v,
-                     const liste_d_adjacence *g,
-                     t_tarjan_vertex *sommets,
-                     Stack *pile,
-                     int *compteur,
-                     t_stock_classe *stock)
+
+// ETAPE 3
+
+// Question 3.1
+static void parcours(int v, const liste_d_adjacence *g, t_tarjan_vertex *sommets, Stack *pile, int *compteur,t_stock_classe *stock)
 {
     sommets[v].num = *compteur;
     sommets[v].num_acc = *compteur;
@@ -81,9 +85,9 @@ static void parcours(int v,
     push(pile, v);
     sommets[v].ind_bool = 1;
 
-    cell *cur = g->list[v].head;
+    cellule *cur = g->list[v].head;
     while (cur) {
-        int w = cur->arriv - 1;
+        int w = cur->sommet_arrive - 1;
 
         if (sommets[w].num == -1) {
             parcours(w, g, sommets, pile, compteur, stock);
@@ -147,7 +151,7 @@ static void parcours(int v,
     }
 }
 
-// Applique l'algorithme de Tarjan au graphe et renvoie la structure de classes
+// Question 3.2
 t_stock_classe* tarjan(const liste_d_adjacence *g) {
     if (!g || g->n <= 0) return NULL;
 
@@ -191,11 +195,11 @@ t_stock_classe* tarjan(const liste_d_adjacence *g) {
     return stock;
 }
 
-// Affiche les classes obtenues par Tarjan
+// Affichage classes obtenues par Tarjan
 void printPartition(const t_stock_classe *p) {
     if (!p) return;
 
-    printf("\n=== Partition en composantes fortement connexes ===\n");
+    printf("\n - Partition en composantes fortement connexes - \n");
     for (int i = 0; i < p->nb_classes; i++) {
         printf("%s : {", p->classes[i].name);
         for (int j = 0; j < p->classes[i].taille; j++) {
@@ -208,7 +212,7 @@ void printPartition(const t_stock_classe *p) {
     }
 }
 
-// Libère toute la mémoire associée aux classes
+// Libère mémoire associée aux classes
 void freePartition(t_stock_classe *p) {
     if (!p) return;
 
