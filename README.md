@@ -34,23 +34,78 @@ Ce projet implémente une suite d'outils pour l'étude des **graphes de Markov**
 ## ✨ Fonctionnalités
 
 ### Partie 1 : Gestion des graphes
-- ✅ Chargement depuis fichier texte
-- ✅ Validation de la propriété de Markov
-- ✅ Visualisation avec Mermaid
+
+- ✅ Chargement depuis fichier texte  
+  **Fonctions utilisées :**  
+  - `readGraph()`  
+  - `createCell()`  
+  - `addCell()`  
+  - `printListe_d_adjacence()`
+
+- ✅ Vérification de la propriété de Markov  
+  La somme des probabilités sortantes doit être comprise entre **0.99 et 1.01**.  
+  **Fonction :** `checkMarkov()`
+
+- ✅ Visualisation du graphe original via Mermaid  
+  Génération d’un fichier `.mmd` compatible MermaidChart  
+  **Fonction :** `visualMermaid()`
+
+---
 
 ### Partie 2 : Analyse structurelle
-- ✅ Décomposition en composantes fortement connexes (Tarjan)
-- ✅ Construction du diagramme de Hasse
-- ✅ Réduction transitive
-- ✅ Identification des états absorbants et transitoires
-- ✅ Détection de l'irréductibilité
+
+- ✅ Décomposition en composantes fortement connexes (Tarjan)  
+  **Structures :**  
+  - `t_tarjan_vertex`  
+  - `t_classe`  
+  - `t_stock_classe`  
+  **Fonctions :**  
+  - `tarjan()`  
+  - `printPartition()`  
+  - `freePartition()`
+
+- ✅ Construction du diagramme de Hasse  
+  **Fonctions :**  
+  - `createVertexToClassMap()`  
+  - `buildClassLinks()`  
+  - `removeTransitiveLinks()`  
+  - `generateHasseDiagram()`
+
+- ✅ Analyse des propriétés du graphe  
+  Détection automatique :  
+  - classes **transitoires**  
+  - classes **persistantes**  
+  - **états absorbants**  
+  - **irréductibilité**  
+  **Fonction :** `analyzeGraphProperties()`
+
+---
 
 ### Partie 3 : Calculs probabilistes
-- ✅ Conversion graphe → matrice de transition
-- ✅ Calcul de puissances matricielles (M², M³, Mⁿ)
-- ✅ Détection de convergence
-- ✅ Extraction de sous-matrices par classe
-- ❌ Calcul de distributions stationnaires
+
+**Fonctions principales :**
+- `createZeroMatrix()`  
+- `graphToTransitionMatrix()`  
+- `multiplyMatrix()`  
+- `copyMatrix()`  
+- `diffMatrix()`  
+- `subMatrix()`
+
+Ces fonctions permettent :
+- de générer la **matrice de transition M**,  
+- de calculer des puissances `M^n` (M³, M⁷…),  
+- de détecter la **convergence** (`diff(M^k, M^(k-1)) < epsilon`),  
+- d’extraire des sous-matrices par classe,  
+- de calculer les **distributions stationnaires**.
+
+---
+
+### 🏁 Partie Bonus — Périodicité
+
+Calcul automatique de la période des classes :  
+- Détection des cycles  
+- PGCD des longueurs  
+- Analyse via puissances successives des sous-matrices  
 
 ---
 
@@ -97,6 +152,10 @@ make
 ```bash
 ./markov
 ```
+
+
+
+
 
 ### Menu interactif
 
