@@ -1,13 +1,218 @@
-P2-SC4 
+# 🎲 Projet Graphes de Markov - TI301
 
-Étudiants : Walid KARA / Aurélien DEVAUX-RIVIÈRE / Augustin NANOUX
+[![C](https://img.shields.io/badge/Language-C-blue.svg)](https://en.wikipedia.org/wiki/C_(programming_language))
+[![License](https://img.shields.io/badge/License-Academic-green.svg)]()
 
-Nom du projet : Étude de Graphes de Markov – PARTIE 1
+> Analyse automatique de chaînes de Markov à temps discret : partition en composantes fortement connexes, diagramme de Hasse, et calcul de distributions stationnaires.
 
-Objectif Partie 1 :
-Ce projet permet de lire un graphe de Markov à partir d’un fichier texte, d’afficher sa liste d’adjacence et de vérifier s’il respecte les propriétés d’un graphe de Markov.
+## 📋 Table des matières
 
-Utilisation :
-Placez le fichier du graphe dans le dossier data.
-Dans le fichier main.c, à la ligne 7 (liste_d_adjacence G = readGraph("../data/exemple3.txt");), remplacez "exemple3.txt" par le nom de votre fichier texte.
-Ensuite, compilez le projet depuis le dossier test avec la commande make, puis exécutez le programme généré (./TI_301_PJT). 
+- [À propos](#-à-propos)
+- [Fonctionnalités](#-fonctionnalités)
+- [Structure du projet](#-structure-du-projet)
+- [Installation](#-installation)
+- [Utilisation](#-utilisation)
+- [Exemples](#-exemples)
+- [Algorithmes clés](#-algorithmes-clés)
+- [Équipe](#-équipe)
+- [Références](#-références)
+
+---
+
+## 🎯 À propos
+
+Ce projet implémente une suite d'outils pour l'étude des **graphes de Markov** :
+- Chargement et validation de graphes probabilistes
+- Décomposition en composantes fortement connexes (algorithme de Tarjan)
+- Génération de diagrammes de Hasse pour visualiser les relations entre classes
+- Calculs matriciels pour déterminer les distributions stationnaires
+
+**Contexte** : Projet commun Informatique-Mathématiques, Algorithmique et Structures de Données 2.
+
+---
+
+## ✨ Fonctionnalités
+
+### Partie 1 : Gestion des graphes
+- ✅ Chargement depuis fichier texte
+- ✅ Validation de la propriété de Markov
+- ✅ Visualisation avec Mermaid
+
+### Partie 2 : Analyse structurelle
+- ✅ Décomposition en composantes fortement connexes (Tarjan)
+- ✅ Construction du diagramme de Hasse
+- ✅ Réduction transitive
+- ✅ Identification des états absorbants et transitoires
+- ✅ Détection de l'irréductibilité
+
+### Partie 3 : Calculs probabilistes
+- ✅ Conversion graphe → matrice de transition
+- ✅ Calcul de puissances matricielles (M², M³, Mⁿ)
+- ✅ Détection de convergence
+- ✅ Extraction de sous-matrices par classe
+- ✅ Calcul de distributions stationnaires
+
+---
+
+## 📁 Structure du projet
+
+```
+.
+├── data/                   # Fichiers de test (.txt)
+│   ├── exemple1.txt
+│   ├── exemple_meteo.txt
+│   └── ...
+├── hasse.c / hasse.h       # Diagramme de Hasse et analyse
+├── matrix.c / matrix.h     # Opérations matricielles
+├── tarjan.c / tarjan.h     # Algorithme de Tarjan
+├── utils.c / utils.h       # Structures de base (liste d'adjacence)
+├── main.c                  # Programme principal avec menu
+└── README.md
+```
+
+---
+
+## 🚀 Installation
+
+### Prérequis
+- Compilateur C (gcc, clang)
+- Make (optionnel)
+
+### Compilation
+
+```bash
+# Compilation simple
+gcc -o markov main.c utils.c tarjan.c hasse.c matrix.c -lm
+
+# Ou avec make (si Makefile fourni)
+make
+```
+
+---
+
+## 💻 Utilisation
+
+### Lancer le programme
+
+```bash
+./markov
+```
+
+### Menu interactif
+
+```
+//================================\\
+||              MENU              ||
+//================================\\
+1.  Charger un graphe depuis un fichier (dossier data)
+2.  Afficher la liste d'adjacence
+3.  Vérifier la propriété de Markov
+4.  Générer le graphe original (Mermaid)
+5.  Lancer Tarjan et afficher les classes
+6.  Construire les liens entre classes (Hasse)
+7.  Supprimer les liens transitifs (réduction Hasse)
+8.  Générer le diagramme de Hasse (Mermaid)
+9.  Analyser les propriétés du graphe
+10. Tests sur l'exemple météo (M, M³, M⁷)
+11. Test de convergence M^k pour un fichier
+0.  Quitter
+```
+
+### Format des fichiers d'entrée
+
+```
+<nombre_de_sommets>
+<sommet_départ> <sommet_arrivée> <probabilité>
+...
+```
+
+**Exemple** (`exemple1.txt`) :
+```
+4
+1 1 0.95
+1 2 0.04
+1 3 0.01
+2 2 0.9
+...
+```
+
+---
+
+## 📊 Exemples
+
+### Exemple 1 : Graphe simple à 4 états
+
+```bash
+Ton choix : 1
+Nom du fichier : exemple1.txt
+Graphe chargé depuis data/exemple1.txt.
+
+Ton choix : 5
+=== Partition en composantes fortement connexes ===
+C1 : {1,2,3,4}
+```
+
+**Résultat** : Le graphe est irréductible (1 seule classe).
+
+### Exemple 2 : Graphe météo
+
+```bash
+Ton choix : 10
+--- Tests sur data/exemple_meteo.txt ---
+
+Matrice M :
+  0.3400   0.2700   0.0000   0.1800   0.2100
+  0.2000   0.4000   0.2000   0.0000   0.2000
+  ...
+
+Matrice M^7 :
+  0.1600   0.3600   0.1300   0.0500   0.2900
+  0.1600   0.3600   0.1300   0.0500   0.2900
+  ...
+```
+
+**Interprétation** : Convergence vers une distribution stationnaire après 7 jours.
+
+### Exemple 3 : Visualisation Mermaid
+
+Après avoir généré `graph.mmd` ou `hasse.mmd`, copiez le contenu sur [mermaidchart.com](https://www.mermaidchart.com/) pour visualiser le graphe.
+
+---
+
+## 🔧 Algorithmes clés
+
+### Algorithme de Tarjan
+- **Complexité** : O(V + E)
+- **But** : Trouver les composantes fortement connexes en un seul parcours DFS
+- **Principe** : Utilise une pile et deux numéros par sommet (num, num_acc)
+
+### Réduction transitive
+- **But** : Supprimer les arêtes redondantes (A→C si A→B et B→C existent)
+- **Implémentation** : Parcours exhaustif avec suppression in-place
+
+### Convergence matricielle
+- **Méthode** : Calcul de Mⁿ jusqu'à ce que ||Mⁿ - Mⁿ⁻¹|| < ε
+- **Seuil par défaut** : ε = 0.01, max 1000 itérations
+
+---
+
+## 👥 Équipe
+
+| Nom | Rôle | Contributions principales |
+|-----|------|--------------------------|
+| **Walid** | Gestion des données | Chargement, fichiers, visualisation Mermaid |
+| **Augustin** | Structures & Matrices | SDD Tarjan, opérations matricielles |
+| **Aurélien** | Algorithmes avancés | Tarjan, liens entre classes, convergence |
+
+---
+
+## 📚 Références
+
+- [Algorithme de Tarjan](https://fr.wikipedia.org/wiki/Algorithme_de_Tarjan)
+- [Chaînes de Markov](https://fr.wikipedia.org/wiki/Cha%C3%AEne_de_Markov)
+- [Mermaid Diagrams](https://mermaid.js.org/)
+
+---
+
+
+
