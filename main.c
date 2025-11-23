@@ -243,7 +243,6 @@ int main(void) {
         }
 
         case 0:
-            
             break;
 
         default:

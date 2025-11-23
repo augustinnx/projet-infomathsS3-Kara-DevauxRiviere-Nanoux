@@ -4,16 +4,19 @@
 
 // Initialise un tableau dynamique de liens
 static void linkArrayInit(t_link_array *arr, int cap) {
-    arr->links = (t_link *)malloc(sizeof(t_link) * (cap > 0 ? cap : 8));
+    if (cap <= 0) cap = 8;
+    arr->links = (t_link *)malloc(sizeof(t_link) * cap);
     arr->log_size = 0;
-    arr->capacite = (cap > 0 ? cap : 8);
+    arr->capacity = cap;
 }
 
 // Ajoute un lien dans le tableau dynamique
 static void linkArrayPush(t_link_array *arr, t_link e) {
-    if (arr->log_size >= arr->capacite) {
-        arr->capacite = arr->capacite * 2;
-        arr->links = (t_link *)realloc(arr->links, sizeof(t_link) * arr->capacite);
+    if (arr->log_size >= arr->capacity) {
+        arr->capacity *= 2;
+        t_link *tmp = (t_link *)realloc(arr->links, sizeof(t_link) * arr->capacity);
+        if (!tmp) return;
+        arr->links = tmp;
     }
     arr->links[arr->log_size++] = e;
 }
@@ -24,25 +27,7 @@ void freeLinkArray(t_link_array *arr) {
     free(arr->links);
     arr->links = NULL;
     arr->log_size = 0;
-    arr->capacite = 0;
-}
-
-// Construit les liens à partir d'une matrice d'adjacence pondérée
-int buildLinksFromWeightedMatrix(int n, double **mat, double threshold, t_link_array *out) {
-    if (!mat || !out || n <= 0) return -1;
-    linkArrayInit(out, n * 2);
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            if (i == j) continue;
-            if (mat[i][j] >= threshold) {
-                t_link e;
-                e.from = i + 1;
-                e.to   = j + 1;
-                linkArrayPush(out, e);
-            }
-        }
-    }
-    return 0;
+    arr->capacity = 0;
 }
 
 // Supprime les arêtes transitives dans le diagramme de Hasse
@@ -69,7 +54,8 @@ void removeTransitiveLinks(t_link_array *p_link_array) {
         }
 
         if (to_remove) {
-            p_link_array->links[i] = p_link_array->links[p_link_array->log_size - 1];
+            p_link_array->links[i] =
+                p_link_array->links[p_link_array->log_size - 1];
             p_link_array->log_size--;
         } else {
             i++;
@@ -88,9 +74,9 @@ int* createVertexToClassMap(const t_stock_classe *p, int n) {
 
     for (int c = 0; c < p->nb_classes; c++) {
         for (int v = 0; v < p->classes[c].taille; v++) {
-            int vertex_id = p->classes[c].sommets[v].id;
+            int vertex_id = p->classes[c].sommets[v].id;  // 1..n
             if (vertex_id >= 1 && vertex_id <= n) {
-                map[vertex_id - 1] = c;
+                map[vertex_id - 1] = c;                    // 0..nb_classes-1
             }
         }
     }
@@ -102,13 +88,7 @@ t_link_array* buildClassLinks(const liste_d_adjacence *g, const t_stock_classe *
     t_link_array *links = (t_link_array*)malloc(sizeof(t_link_array));
     if (!links) return NULL;
 
-    links->log_size = 0;
-    links->capacite = 10;
-    links->links = (t_link*)malloc(sizeof(t_link) * links->capacite);
-    if (!links->links) {
-        free(links);
-        return NULL;
-    }
+    linkArrayInit(links, 10);
 
     int *vertex_to_class = createVertexToClassMap(p, g->n);
     if (!vertex_to_class) {
@@ -135,24 +115,10 @@ t_link_array* buildClassLinks(const liste_d_adjacence *g, const t_stock_classe *
                 }
 
                 if (!exists) {
-                    if (links->log_size >= links->capacite) {
-                        links->capacite *= 2;
-                        t_link *new_links = (t_link*)realloc(
-                            links->links,
-                            sizeof(t_link) * links->capacite
-                        );
-                        if (!new_links) {
-                            free(vertex_to_class);
-                            free(links->links);
-                            free(links);
-                            return NULL;
-                        }
-                        links->links = new_links;
-                    }
-
-                    links->links[links->log_size].from = Ci + 1;
-                    links->links[links->log_size].to   = Cj + 1;
-                    links->log_size++;
+                    t_link e;
+                    e.from = Ci + 1;  // classes numérotées 1..nb_classes
+                    e.to   = Cj + 1;
+                    linkArrayPush(links, e);
                 }
             }
 
@@ -184,21 +150,27 @@ void generateHasseDiagram(const t_stock_classe *p,
         "flowchart TD\n"
     );
 
+    // Nœuds (classes)
     for (int i = 0; i < p->nb_classes; i++) {
         fprintf(f, "%s[\"%s: {", p->classes[i].name, p->classes[i].name);
         for (int j = 0; j < p->classes[i].taille; j++) {
             fprintf(f, "%d", p->classes[i].sommets[j].id);
-            if (j < p->classes[i].taille - 1) {
-                fprintf(f, ",");
-            }
+            if (j < p->classes[i].taille - 1) fprintf(f, ",");
         }
         fprintf(f, "}\"]\n");
     }
     fprintf(f, "\n");
 
+    // Liens entre classes
     for (int i = 0; i < links->log_size; i++) {
-        fprintf(f, "C%d --> C%d\n",
-                links->links[i].from, links->links[i].to);
+        int from_idx = links->links[i].from - 1;
+        int to_idx   = links->links[i].to   - 1;
+        if (from_idx >= 0 && from_idx < p->nb_classes &&
+            to_idx   >= 0 && to_idx   < p->nb_classes) {
+            fprintf(f, "%s --> %s\n",
+                    p->classes[from_idx].name,
+                    p->classes[to_idx].name);
+        }
     }
 
     fclose(f);
